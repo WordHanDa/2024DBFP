@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 import Papa from 'papaparse';
+import axios from 'axios';
 
 const Datagrid = () => {
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState([]);
   const [error, setError] = useState(null);
-  const [filteredRows, setFilteredRows] = useState([]); // State for filtered rows
+  const [filteredRows, setFilteredRows] = useState([]);
   const columns = [
     { field: 'name', headerName: 'Name', width: 250 },
     { field: 'antivenomType', headerName: 'Antivenom Type', width: 250 },
@@ -22,22 +23,27 @@ const Datagrid = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://od.cdc.gov.tw/rdvd/snake_place.csv");
-        if (!response.ok) {
-          throw new Error(`Network response was not ok. Status: ${response.status} ${response.statusText}`);
-        }
-        const csvData = await response.text();
-        // Parse CSV data...
+        const response = await axios.get("https://cors-anywhere.herokuapp.com/https://od.cdc.gov.tw/rdvd/snake_place.csv");
+        const csvData = response.data;
+        
+        // Parse CSV data using PapaParse
+        const { data } = Papa.parse(csvData, { header: true });
+        
+        // Ensure each row has a unique ID
+        const rowsWithIds = data.map((row, index) => ({ ...row, id: index + 1 }));
+
+        setRows(rowsWithIds);
+        setFilteredRows(rowsWithIds);
       } catch (error) {
         console.error('Error fetching data:', error);
         setError(error);
+      } finally {
+        setLoading(false);
       }
-      
     };
     
-
     fetchData();
-  }, []); // Run only once on component mount
+  }, []);
 
   function handleSearch(event) {
     const searchInput = event.target.value.toLowerCase();
