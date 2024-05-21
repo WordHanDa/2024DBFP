@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
+import MapWithMarkerCluster from './map';
 
 const Datagrid = () => {
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState([]);
   const [error, setError] = useState(null);
   const [filteredRows, setFilteredRows] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const columns = [
     { field: '醫療院所名稱', headerName: '醫療院所名稱', width: 200 },
@@ -40,21 +42,42 @@ const Datagrid = () => {
     fetchData();
   }, []);
 
-  function handleSearch(event) {
+  const handleSearch = (event) => {
     const searchInput = event.target.value.toLowerCase();
     const filteredData = rows.filter(data => 
       data.醫療院所名稱.toLowerCase().includes(searchInput)
     );
     setFilteredRows(filteredData);
-  }
+  };
+
+  const handleSelectionChange = (selectionModel) => {
+    console.log("Selection Model:", selectionModel); // Add this line
+    const selectedIDs = new Set(selectionModel);
+    const selectedData = rows.filter(row => selectedIDs.has(row.id));
+    setSelectedRows(selectedData);
+    console.log("Selected Rows:");
+    selectedData.forEach(row => {
+      console.log(`Latitude: ${row.緯度}, Longitude: ${row.經度}`);
+    });
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div style={{ height: 400, width: '80%', margin: 'auto' }}>
-      <input type="text" placeholder="輸入名稱進行搜尋..." onChange={handleSearch}/>
-      <DataGrid rows={filteredRows} columns={columns} pageSize={5}/>
+    <div>
+      <div style={{ height: 400, width: '80%', margin: 'auto' }}>
+        <input type="text" placeholder="輸入名稱進行搜尋..." onChange={handleSearch} />
+        <DataGrid
+          rows={filteredRows}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5, 10, 20]}
+          checkboxSelection
+          onSelectionModelChange={(newSelection) => handleSelectionChange(newSelection)}
+        />
+      </div>
+      <MapWithMarkerCluster selectedRows={selectedRows} />
     </div>
   );
 }
