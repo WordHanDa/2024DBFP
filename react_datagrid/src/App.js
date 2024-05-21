@@ -1,5 +1,6 @@
 import Datagrid from './datagrid'
 import HelloCGU from './cgu_hello'
+import MapBody from './map';
 
 function App() {
   return (
@@ -9,6 +10,9 @@ function App() {
     </div>
     <div>
       { Datagrid() } 
+    </div>
+    <div>
+      { MapBody() } 
     </div>
     </div>
   );
