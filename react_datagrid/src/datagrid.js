@@ -10,10 +10,9 @@ const Datagrid = () => {
   const [selectedRows, setSelectedRows] = useState([]);
 
   const columns = [
-    { field: '醫療院所名稱', headerName: '醫療院所名稱', width: 200 },
-    { field: '抗蛇毒血清種類', headerName: '抗蛇毒血清種類', width: 200 },
-    { field: '經度', headerName: '經度', width: 200 },
-    { field: '緯度', headerName: '緯度', width: 200 },
+    { field: '醫院名稱', headerName: '醫院名稱', width: 200 },
+    { field: '醫院地址', headerName: '醫院地址', width: 200 },
+    { field: '醫院電話', headerName: '醫院電話', width: 200 },
     { field: '醫事機構代碼', headerName: '醫事機構代碼', width: 200 },
   ];
 
@@ -66,20 +65,20 @@ const Datagrid = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <div style={{ height: 400, width: '80%' }}>
-        <input type="text" placeholder="輸入名稱進行搜尋..." onChange={handleSearch} />
-        <DataGrid
-          rows={filteredRows}
-          columns={columns}
-          pageSize={5}
-          checkboxSelection
-          onSelectionModelChange={(newSelection) => handleSelectionChange(newSelection)}
-        />
-      </div>
-      <div style={{ width: '80%', marginTop: 20 }}>
-        <MapWithMarkerCluster selectedRows={selectedRows} />
-      </div>
+    <div style={{ height: 400, width: '80%' }}>
+      <input type="text" placeholder="輸入名稱進行搜尋..." onChange={handleSearch} />
+      <DataGrid
+        rows={filteredRows}
+        columns={columns}
+        pageSize={5}
+        checkboxSelection
+        onSelectionModelChange={handleSelectionChange}
+      />
     </div>
+    <div style={{ width: '80%', marginTop: 20 }}>
+      <MapWithMarkerCluster selectedRows={selectedRows} />
+    </div>
+  </div>
   );
 }
 
