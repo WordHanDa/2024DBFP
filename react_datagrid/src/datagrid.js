@@ -11,9 +11,9 @@ const Datagrid = () => {
 
   const columns = [
     { field: '醫院名稱', headerName: '醫院名稱', width: 200 },
-    { field: '醫院地址', headerName: '醫院地址', width: 200 },
     { field: '醫院電話', headerName: '醫院電話', width: 200 },
     { field: '醫事機構代碼', headerName: '醫事機構代碼', width: 200 },
+    { field: '醫院地址', headerName: '醫院地址', width: 400 },
   ];
 
   useEffect(() => {
@@ -41,14 +41,6 @@ const Datagrid = () => {
     fetchData();
   }, []);
 
-  const handleSearch = (event) => {
-    const searchInput = event.target.value.toLowerCase();
-    const filteredData = rows.filter(data => 
-      data.醫療院所名稱.toLowerCase().includes(searchInput)
-    );
-    setFilteredRows(filteredData);
-  };
-
   const handleSelectionChange = (selectionModel) => {
     console.log("Selection Model:", selectionModel); // Add this line
     const selectedIDs = new Set(selectionModel);
@@ -75,7 +67,7 @@ const Datagrid = () => {
         onSelectionModelChange={handleSelectionChange}
       />
     </div>
-    <div style={{ width: '80%', marginTop: 20 }}>
+    <div style={{ width: '80%', marginTop: 50 }}>
       <MapWithMarkerCluster selectedRows={selectedRows} />
     </div>
   </div>
