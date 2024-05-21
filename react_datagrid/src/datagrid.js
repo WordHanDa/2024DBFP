@@ -65,19 +65,20 @@ const Datagrid = () => {
   if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div>
-      <div style={{ height: 400, width: '80%', margin: 'auto' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div style={{ height: 400, width: '80%' }}>
         <input type="text" placeholder="輸入名稱進行搜尋..." onChange={handleSearch} />
         <DataGrid
           rows={filteredRows}
           columns={columns}
           pageSize={5}
-          rowsPerPageOptions={[5, 10, 20]}
           checkboxSelection
           onSelectionModelChange={(newSelection) => handleSelectionChange(newSelection)}
         />
       </div>
-      <MapWithMarkerCluster selectedRows={selectedRows} />
+      <div style={{ width: '80%', marginTop: 20 }}>
+        <MapWithMarkerCluster selectedRows={selectedRows} />
+      </div>
     </div>
   );
 }
