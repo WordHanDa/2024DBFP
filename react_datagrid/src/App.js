@@ -4,6 +4,7 @@ import SeurmMapTitle from './ptitle';
 import MapLoaction from './selectLoacation'
 import SerumMapFooter from './pfooter'
 import SerumMapHeader from './pheader'
+import SnakeFeature from './snakefeature';
 
 function App() {
   return (
@@ -13,6 +14,9 @@ function App() {
       </div>
       <div>
         <SeurmMapTitle />
+      </div>
+      <div>
+        <SnakeFeature />
       </div>
       <div>
         <MapLoaction />
