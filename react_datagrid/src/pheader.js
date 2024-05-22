@@ -1,14 +1,15 @@
 import React from 'react';
 
 const headerStyle = { 
-  backgroundColor: "white", 
+  backgroundColor: "rgba(255, 255, 255,0.9)", // Semi-transparent background for frosted glass effect
   backgroundSize: 'cover', 
+  backgroundPosition: 'center', 
   position: 'fixed', 
   top: 0, 
   left: 0, 
   right: 0, 
-  height: '80px',
-  opacity: 0.9,
+  height: '50px',
+  opacity: 1,
   zIndex: 10 // Higher z-index to ensure it's on top
 };
 
@@ -17,7 +18,7 @@ const overlayStyle = {
   top: 0,
   left: 0,
   right: 0,
-  height: '100px',
+  height: '50px',
   zIndex: 20, // Higher z-index to ensure it's on top of the blurred background
   display: 'flex',
   alignItems: 'center',
@@ -25,9 +26,9 @@ const overlayStyle = {
   color: 'black'
 };
 
-const h1Style = {
+const h2Style = {
   margin: 0,
-  marginTop: '-20px' // Adjust the marginTop to move the h1 element up
+  marginTop: '0px' // Adjust the marginTop to move the h2 element up
 };
 
 const SerumMapHeader = () => { 
@@ -35,9 +36,9 @@ const SerumMapHeader = () => {
     <>
       <div style={headerStyle}></div>
       <div style={overlayStyle}>
-        <h1 style={h1Style}>
+        <h2 style={h2Style}>
           Serum Map
-        </h1>
+        </h2>
       </div>
     </>
   ); 

@@ -15,7 +15,7 @@ const backgroundStyle = {
   left: 0, 
   right: 0, 
   bottom: 0, 
-  filter: 'brightness(0.4) blur(5px)', 
+  filter: 'brightness(0.4)', 
   zIndex: 0 
 };
 const overlayStyle = {
