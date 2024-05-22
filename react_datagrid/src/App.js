@@ -2,10 +2,15 @@ import React from 'react';
 import Datagrid from './datagrid';
 import SeurmMapTitle from './ptitle';
 import MapLoaction from './selectLoacation'
+import SerumMapFooter from './pfooter'
+import SerumMapHeader from './pheader'
 
 function App() {
   return (
     <div className="App">
+      <div>
+        <SerumMapHeader />
+      </div>
       <div>
         <SeurmMapTitle />
       </div>
@@ -17,6 +22,9 @@ function App() {
       </div>
       <div>
         <Datagrid />
+      </div>
+      <div>
+      <SerumMapFooter/>
       </div>
     </div>
   );

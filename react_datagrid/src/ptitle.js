@@ -5,7 +5,7 @@ const styleArgument2 = { fontSize: '30px', color: 'white' };
 const containerStyle = { 
   position: 'relative', 
   textAlign: 'center', 
-  padding: '20px' 
+  padding: '100px' 
 };
 const backgroundStyle = { 
   backgroundImage: 'url(./titleBG.jpg)', 
