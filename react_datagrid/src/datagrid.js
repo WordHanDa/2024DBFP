@@ -21,7 +21,7 @@ const Datagrid = () => {
       {
         field: '醫院地址',
         operator: 'contains',
-        value: '台北',
+        value: '台北市',
       },
     ],
   });

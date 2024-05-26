@@ -6,7 +6,6 @@ import SerumMapFooter from './pfooter'
 import SerumMapHeader from './pheader'
 import SnakeFeature from './snakefeature';
 import ImageListWithTitle from './imagelistwithtitle';
-import UserLocation from './userlocation'
 
 const containerStyle = { 
   display: 'flex', 
