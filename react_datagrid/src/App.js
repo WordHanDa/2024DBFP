@@ -6,6 +6,7 @@ import SerumMapFooter from './pfooter'
 import SerumMapHeader from './pheader'
 import SnakeFeature from './snakefeature';
 import ImageListWithTitle from './imagelistwithtitle';
+import ParentComponent from './parentcomponent';
 
 const containerStyle = { 
   display: 'flex', 
@@ -37,7 +38,7 @@ function App() {
         <h1>附近的醫院或衛生所</h1>
       </div>
       <div>
-        <Datagrid />
+        <ParentComponent />
       </div>
       <div>
         <SerumMapFooter />

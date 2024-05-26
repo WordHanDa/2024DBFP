@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 import MapWithMarkerCluster from './map';
 
-const Datagrid = () => {
+const Datagrid = (selectLocation) => {
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState([]);
   const [error, setError] = useState(null);
   const [filteredRows, setFilteredRows] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
+  const { selectedLocation } = selectLocation;
 
   const columns = [
     { field: '醫院名稱', headerName: '醫院名稱', width: 200 },
@@ -15,13 +16,13 @@ const Datagrid = () => {
     { field: '醫事機構代碼', headerName: '醫事機構代碼', width: 200 },
     { field: '醫院地址', headerName: '醫院地址', width: 400 },
   ];
-
+   console.log(selectedLocation);
   const [filterModel, setFilterModel] = React.useState({
     items: [
       {
         field: '醫院地址',
         operator: 'contains',
-        value: '台北市',
+        value: selectedLocation,
       },
     ],
   });
