@@ -2,14 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 import MapWithMarkerCluster from './map';
 
-const Datagrid = (selectLocation) => {
+const Datagrid = ({ selectedLocation }) => {
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState([]);
   const [error, setError] = useState(null);
   const [filteredRows, setFilteredRows] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-  const {selectedLocation}=selectLocation;
-  
+  const [filterModel, setFilterModel] = useState({
+    items: [
+      {
+        field: '醫院地址',
+        operator: 'contains',
+        value: selectedLocation,
+      },
+    ],
+  });
 
   const columns = [
     { field: '醫院名稱', headerName: '醫院名稱', width: 200 },
@@ -18,15 +25,6 @@ const Datagrid = (selectLocation) => {
     { field: '醫院地址', headerName: '醫院地址', width: 400 },
   ];
   console.log(selectedLocation);
-  const [filterModel, setFilterModel] = React.useState({
-  items: [
-    {
-      field: '醫院地址',
-      operator: 'contains',
-      value: selectLocation,
-    },
-  ],
-});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,17 +52,36 @@ const Datagrid = (selectLocation) => {
   }, []);
 
   useEffect(() => {
-    setFilterModel(prevFilterModel => ({
-      ...prevFilterModel,
+    const applyFilters = () => {
+      let filteredData = [...rows];
+      
+      filterModel.items.forEach((filter) => {
+        const { field, operator, value } = filter;
+        filteredData = filteredData.filter((row) => {
+          if (operator === 'contains') {
+            return row[field].includes(value);
+          }
+          return true;
+        });
+      });
+      
+      setFilteredRows(filteredData);
+    };
+  
+    applyFilters();
+  }, [filterModel, rows]);
+
+  useEffect(() => {
+    setFilterModel({
       items: [
         {
-          ...prevFilterModel.items[0], // Keep other items unchanged
-          value: selectLocation,
+          field: '醫院地址',
+          operator: 'contains',
+          value: selectedLocation,
         },
       ],
-    }));
-  }, [selectLocation]);
-  
+    });
+  }, [selectedLocation]);
 
   const handleSelectionChange = (selectionModel) => {
     const selectedIDs = new Set(selectionModel);
@@ -77,21 +94,21 @@ const Datagrid = (selectLocation) => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-    <div style={{ height: 400, width: '80%' }}>
-    <DataGrid
-      rows={filteredRows}
-      columns={columns}
-      pageSize={5}
-      checkboxSelection
-      onSelectionModelChange={handleSelectionChange}
-      filterModel={filterModel}
-      onFilterModelChange={(newFilterModel) => setFilterModel(newFilterModel)}
-    />
+      <div style={{ height: 400, width: '80%' }}>
+        <DataGrid
+          rows={filteredRows}
+          columns={columns}
+          pageSize={5}
+          checkboxSelection
+          onSelectionModelChange={handleSelectionChange}
+          filterModel={filterModel}
+          onFilterModelChange={(newFilterModel) => setFilterModel(newFilterModel)}
+        />
+      </div>
+      <div style={{ width: '80%', marginTop: 50 }}>
+        <MapWithMarkerCluster selectedRows={selectedRows} />
+      </div>
     </div>
-    <div style={{ width: '80%', marginTop: 50 }}>
-      <MapWithMarkerCluster selectedRows={selectedRows} />
-    </div>
-  </div>
   );
 }
 

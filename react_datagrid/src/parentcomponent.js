@@ -12,6 +12,7 @@ const ParentComponent = () => {
   return (
     <div>
       <MapLocation handleLocationChange={handleLocationChange} />
+      {/* Pass selectedLocation to Datagrid */}
       <Datagrid selectedLocation={selectedLocation} />
     </div>
   );
