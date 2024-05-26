@@ -87,7 +87,7 @@ const ImageListWithTitle = () => {
             <MenuItem value={'斑塊'}>斑塊</MenuItem>
           </Select>
         </FormControl>
-        <FormControl variant="outlined" sx={{ minWidth: 120 }}>
+        <FormControl variant="outlined" sx={{ minWidth: 120 }} >
           <InputLabel id="head-shape-select-label">頭部形狀</InputLabel>
           <Select
             labelId="head-shape-select-label"

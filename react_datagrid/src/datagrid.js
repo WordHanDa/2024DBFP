@@ -16,6 +16,16 @@ const Datagrid = () => {
     { field: '醫院地址', headerName: '醫院地址', width: 400 },
   ];
 
+  const [filterModel, setFilterModel] = React.useState({
+    items: [
+      {
+        field: '醫院地址',
+        operator: 'contains',
+        value: '台北',
+      },
+    ],
+  });
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -41,6 +51,29 @@ const Datagrid = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    // Function to apply filters to rows
+    const applyFilters = () => {
+      let filteredData = [...rows]; // Create a copy of rows
+      
+      filterModel.items.forEach((filter) => {
+        const { field, operator, value } = filter;
+        filteredData = filteredData.filter((row) => {
+          if (operator === 'contains') {
+            return row[field].includes(value);
+          }
+          // You can add more operators like 'equals', 'startsWith', etc. as needed
+          return true;
+        });
+      });
+      
+      setFilteredRows(filteredData);
+    };
+  
+    applyFilters(); // Call the function initially and whenever filterModel changes
+  }, [filterModel, rows]); // Include filterModel and rows in the dependency array
+  
+
   const handleSelectionChange = (selectionModel) => {
     console.log("Selection Model:", selectionModel); // Add this line
     const selectedIDs = new Set(selectionModel);
@@ -58,13 +91,15 @@ const Datagrid = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
     <div style={{ height: 400, width: '80%' }}>
-      <DataGrid
-        rows={filteredRows}
-        columns={columns}
-        pageSize={5}
-        checkboxSelection
-        onSelectionModelChange={handleSelectionChange}
-      />
+    <DataGrid
+      rows={filteredRows}
+      columns={columns}
+      pageSize={5}
+      checkboxSelection
+      onSelectionModelChange={handleSelectionChange}
+      filterModel={filterModel}
+      onFilterModelChange={(newFilterModel) => setFilterModel(newFilterModel)}
+    />
     </div>
     <div style={{ width: '80%', marginTop: 50 }}>
       <MapWithMarkerCluster selectedRows={selectedRows} />
