@@ -5,6 +5,15 @@ import MapLoaction from './selectLoacation'
 import SerumMapFooter from './pfooter'
 import SerumMapHeader from './pheader'
 import SnakeFeature from './snakefeature';
+import ImageListWithTitle from './imagelistwithtitle';
+
+const containerStyle = { 
+  display: 'flex', 
+  justifyContent: 'center', 
+  alignItems: 'center', 
+  textAlign: 'center', 
+  padding: '10px' 
+};
 
 function App() {
   return (
@@ -18,6 +27,9 @@ function App() {
       <div>
         <SnakeFeature />
       </div>
+      <div style={containerStyle}>
+        <ImageListWithTitle />
+      </div>
       <div>
         <MapLoaction />
       </div>
@@ -28,7 +40,7 @@ function App() {
         <Datagrid />
       </div>
       <div>
-      <SerumMapFooter/>
+        <SerumMapFooter />
       </div>
     </div>
   );

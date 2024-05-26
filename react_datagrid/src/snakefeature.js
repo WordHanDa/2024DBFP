@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 const styleArgument = {
   fontSize: '50px',
   color: 'black' 
@@ -17,5 +18,6 @@ const SnakeFeature = () => {
     </div>
   ); 
 }
+
 
 export default SnakeFeature;
