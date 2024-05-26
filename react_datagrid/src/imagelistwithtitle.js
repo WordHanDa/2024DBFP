@@ -46,7 +46,7 @@ const ImageListWithTitle = () => {
   return (
     <div style={imageListContainerStyle}>
       <div style={{ marginBottom: '20px', display: 'flex', gap: '20px' }}>
-        <FormControl variant="outlined">
+        <FormControl variant="outlined" sx={{ minWidth: 120 }}>
           <InputLabel id="color-select-label">顏色</InputLabel>
           <Select
             labelId="color-select-label"
@@ -63,7 +63,7 @@ const ImageListWithTitle = () => {
             <MenuItem value={'黑色'}>黑色</MenuItem>
           </Select>
         </FormControl>
-        <FormControl variant="outlined">
+        <FormControl variant="outlined" sx={{ minWidth: 120 }}>
           <InputLabel id="pattern-select-label">斑紋</InputLabel>
           <Select
             labelId="pattern-select-label"
@@ -87,7 +87,7 @@ const ImageListWithTitle = () => {
             <MenuItem value={'斑塊'}>斑塊</MenuItem>
           </Select>
         </FormControl>
-        <FormControl variant="outlined">
+        <FormControl variant="outlined" sx={{ minWidth: 120 }}>
           <InputLabel id="head-shape-select-label">頭部形狀</InputLabel>
           <Select
             labelId="head-shape-select-label"
