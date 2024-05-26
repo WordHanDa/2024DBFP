@@ -22,9 +22,8 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
 
   useEffect(() => {
     if (selectedRows.length > 0) {
-      console.log("Selected Rows:");
       selectedRows.forEach(row => {
-        console.log(`Hospital Name: ${row.醫療院所名稱}, Address: ${row.醫院地址}`);
+        console.log(`Hospital Name: ${row.醫院名稱}, Address: ${row.醫院地址}`);
       });
 
       const firstRow = selectedRows[0];
@@ -37,7 +36,6 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
           console.error(error);
         });
     } else {
-      console.log("No selected rows");
       setCenter({ lat: 25.0718, lng: 121.591982 }); // Reset to default center
       setZoom(14); // Reset to default zoom
     }
@@ -59,7 +57,7 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
               });
 
               const infoWindow = new window.google.maps.InfoWindow({
-                content: `<div><strong>${row.醫療院所名稱}</strong><br>Address: ${row.醫院地址}</div>`
+                content: `<div><strong>${row.醫院名稱}</strong><br>Address: ${row.醫院地址}</div>`
               });
 
               marker.addListener('click', () => {

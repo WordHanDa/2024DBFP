@@ -11,7 +11,7 @@ const containerStyle = {
 };
 
 const MapLocation = ({ handleLocationChange }) => {
-  const [location, setLocation] = React.useState('');
+  const [location, setLocation] = React.useState('台北市');
 
   const handleChange = (event) => {
     const selectedLocation = event.target.value;
@@ -30,7 +30,7 @@ const MapLocation = ({ handleLocationChange }) => {
           label="位置"
           sx={{ fontSize: '1rem', height: '40px' }}
         >
-          <MenuItem value=""><em>None</em></MenuItem>
+          <MenuItem value={''}><em>None</em></MenuItem>
           <MenuItem value={'基隆市'}>基隆市</MenuItem>
           <MenuItem value={'台北市'}>台北市</MenuItem>
           <MenuItem value={'新北市'}>新北市</MenuItem>
