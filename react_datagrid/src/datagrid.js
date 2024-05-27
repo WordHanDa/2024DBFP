@@ -8,15 +8,6 @@ const Datagrid = ({ selectedLocation }) => {
   const [error, setError] = useState(null);
   const [filteredRows, setFilteredRows] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [filterModel, setFilterModel] = useState({
-    items: [
-      {
-        field: '醫院地址',
-        operator: 'contains',
-        value: selectedLocation,
-      },
-    ],
-  });
 
   const columns = [
     { field: '醫院名稱', headerName: '醫院名稱', width: 200 },
@@ -50,37 +41,17 @@ const Datagrid = ({ selectedLocation }) => {
   }, []);
 
   useEffect(() => {
-    console.log(selectedLocation);
-    setFilterModel({
-      items: [
-        {
-          field: '醫院地址',
-          operator: 'contains',
-          value: selectedLocation,
-        },
-      ],
-    });
-  
     const applyFilters = () => {
-      console.log(selectedLocation);
-      let filteredData = [...rows];
-      
-      filterModel.items.forEach((filter) => {
-        const { field, operator, value } = filter;
-        filteredData = filteredData.filter((row) => {
-          if (operator === 'contains') {
-            return row[field].includes(value);
-          }
-          return true;
-        });
-      });
-      
+      const filteredData = rows.filter(row => 
+        row['醫院地址'].includes(selectedLocation)
+      );
       setFilteredRows(filteredData);
     };
-  
-    applyFilters();
-  }, [selectedLocation, rows]);  
-  
+
+    if (rows.length > 0) {
+      applyFilters();
+    }
+  }, [selectedLocation, rows]);
 
   const handleSelectionChange = (selectionModel) => {
     const selectedIDs = new Set(selectionModel);
@@ -93,6 +64,9 @@ const Datagrid = ({ selectedLocation }) => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div style={{ textAlign: 'center' }}>
+        <h1>附近的醫院或衛生所</h1>
+      </div>
       <div style={{ height: 400, width: '80%' }}>
         <DataGrid
           rows={filteredRows}
@@ -100,8 +74,6 @@ const Datagrid = ({ selectedLocation }) => {
           pageSize={5}
           checkboxSelection
           onSelectionModelChange={handleSelectionChange}
-          filterModel={filterModel}
-          onFilterModelChange={setFilterModel}
         />
       </div>
       <div style={{ width: '80%', marginTop: 50 }}>

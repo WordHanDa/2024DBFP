@@ -32,12 +32,6 @@ function App() {
         <ImageListWithTitle />
       </div>
       <div>
-        <MapLoaction />
-      </div>
-      <div style={{ textAlign: 'center' }}>
-        <h1>附近的醫院或衛生所</h1>
-      </div>
-      <div>
         <ParentComponent />
       </div>
       <div>

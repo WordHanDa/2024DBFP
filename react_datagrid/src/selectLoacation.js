@@ -9,6 +9,10 @@ const containerStyle = {
   textAlign: 'center', 
   padding: '20px' 
 };
+const styleArgument = {
+  fontSize: '50px',
+  color: 'black' 
+};
 
 const MapLocation = ({ handleLocationChange }) => {
   const [location, setLocation] = React.useState('台北市');
@@ -21,6 +25,9 @@ const MapLocation = ({ handleLocationChange }) => {
 
   return (
     <div style={containerStyle}>
+      <div>
+        <h1 style={styleArgument}>選擇被咬的位置</h1>
+      </div>
       <FormControl variant="outlined" sx={{ minWidth: 120 }}>
         <InputLabel id="location-select-label" sx={{ fontSize: '1rem' }}>城市</InputLabel>
         <Select
