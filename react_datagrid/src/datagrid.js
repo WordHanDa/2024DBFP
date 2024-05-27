@@ -24,7 +24,6 @@ const Datagrid = ({ selectedLocation }) => {
     { field: '醫事機構代碼', headerName: '醫事機構代碼', width: 200 },
     { field: '醫院地址', headerName: '醫院地址', width: 400 },
   ];
-  console.log(selectedLocation);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,11 +38,10 @@ const Datagrid = ({ selectedLocation }) => {
         const rowsWithIds = data.map((row, index) => ({ ...row, id: index + 1 }));
 
         setRows(rowsWithIds);
-        setFilteredRows(rowsWithIds); // Initialize filtered rows with all rows
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
         setError(error);
-      } finally {
         setLoading(false);
       }
     };
@@ -52,7 +50,19 @@ const Datagrid = ({ selectedLocation }) => {
   }, []);
 
   useEffect(() => {
+    console.log(selectedLocation);
+    setFilterModel({
+      items: [
+        {
+          field: '醫院地址',
+          operator: 'contains',
+          value: selectedLocation,
+        },
+      ],
+    });
+  
     const applyFilters = () => {
+      console.log(selectedLocation);
       let filteredData = [...rows];
       
       filterModel.items.forEach((filter) => {
@@ -69,19 +79,8 @@ const Datagrid = ({ selectedLocation }) => {
     };
   
     applyFilters();
-  }, [filterModel, rows]);
-
-  useEffect(() => {
-    setFilterModel({
-      items: [
-        {
-          field: '醫院地址',
-          operator: 'contains',
-          value: selectedLocation,
-        },
-      ],
-    });
-  }, [selectedLocation]);
+  }, [selectedLocation, rows]);  
+  
 
   const handleSelectionChange = (selectionModel) => {
     const selectedIDs = new Set(selectionModel);
@@ -102,7 +101,7 @@ const Datagrid = ({ selectedLocation }) => {
           checkboxSelection
           onSelectionModelChange={handleSelectionChange}
           filterModel={filterModel}
-          onFilterModelChange={(newFilterModel) => setFilterModel(newFilterModel)}
+          onFilterModelChange={setFilterModel}
         />
       </div>
       <div style={{ width: '80%', marginTop: 50 }}>
