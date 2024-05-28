@@ -1,7 +1,5 @@
 import React from 'react';
-import Datagrid from './datagrid';
 import SeurmMapTitle from './ptitle';
-import MapLoaction from './selectLoacation'
 import SerumMapFooter from './pfooter'
 import SerumMapHeader from './pheader'
 import SnakeFeature from './snakefeature';
