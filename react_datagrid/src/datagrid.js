@@ -4,8 +4,9 @@ import MapWithMarkerCluster from './map';
 
 const Datagrid = ({ selectedLocation }) => {
   const [loading, setLoading] = useState(true);
-  const [rows, setRows] = useState([]);
-  const [error, setError] = useState(null);
+  const [rows, setRows] = useState([
+    { id: 1, 醫院名稱: '臺北市立聯合醫院', 醫院電話: '25553000', 醫事機構代碼: '101090517', 醫院地址: '台北市大同區鄭州路１４５號' }
+  ]);
   const [filteredRows, setFilteredRows] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
 
@@ -17,30 +18,7 @@ const Datagrid = ({ selectedLocation }) => {
   ];
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/convert.json");
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-
-        // Ensure each row has a unique ID
-        const rowsWithIds = data.map((row, index) => ({ ...row, id: index + 1 }));
-
-        setRows(rowsWithIds);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setError(error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
+    setLoading(false);
     const applyFilters = () => {
       const filteredData = rows.filter(row => 
         row['醫院地址'].includes(selectedLocation)
@@ -55,12 +33,11 @@ const Datagrid = ({ selectedLocation }) => {
 
   const handleSelectionChange = (selectionModel) => {
     const selectedIDs = new Set(selectionModel);
-    const selectedData = rows.filter(row => selectedIDs.has(row.id));
+    const selectedData = filteredRows.filter(row => selectedIDs.has(row.id));
     setSelectedRows(selectedData);
   };
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

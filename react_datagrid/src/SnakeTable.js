@@ -1,11 +1,15 @@
 import React from "react";
-import Pagination from "./Pagination";
 
-function SnakeTable({ snakeList, updateField, setUpdateField, updateValue, setUpdateValue, updateSnake, deleteSnake, searchSnake, setSearchSnake, currentPage, itemsPerPage, handlePageChange }) {
-  const filteredSnakeList = snakeList.filter((val) => val.種類.toLowerCase().includes(searchSnake.toLowerCase()));
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentSnakes = filteredSnakeList.slice(indexOfFirstItem, indexOfLastItem);
+function SnakeTable({
+  snakeList,
+  updateField,
+  setUpdateValue,
+  searchSnake,
+  setSearchSnake
+}) {
+  const filteredSnakeList = snakeList.filter((val) =>
+    val.種類.toLowerCase().includes(searchSnake.toLowerCase())
+  );
 
   const renderInputField = () => {
     switch (updateField) {
@@ -58,16 +62,26 @@ function SnakeTable({ snakeList, updateField, setUpdateField, updateValue, setUp
           </select>
         );
       default:
-        return <input type="text" placeholder="Value" onChange={(event) => setUpdateValue(event.target.value)} />;
+        return (
+          <input
+            type="text"
+            placeholder="Value"
+            onChange={(event) => setUpdateValue(event.target.value)}
+          />
+        );
     }
   };
 
   return (
     <div className="snakes">
       <div className="search">
-        <input type="text" placeholder="Search Snakes" value={searchSnake} onChange={(event) => setSearchSnake(event.target.value)} />
+        <input
+          type="text"
+          placeholder="Search Snakes"
+          value={searchSnake}
+          onChange={(event) => setSearchSnake(event.target.value)}
+        />
       </div>
-      
       <table className="snake-table">
         <thead>
           <tr>
@@ -79,11 +93,10 @@ function SnakeTable({ snakeList, updateField, setUpdateField, updateValue, setUp
             <th>斑紋</th>
             <th>頭部形狀</th>
             <th>Antivenom ID</th>
-            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {currentSnakes.map((val, key) => (
+          {filteredSnakeList.map((val, key) => (
             <tr key={key}>
               <td>{val.Snake_ID}</td>
               <td>{val.種類}</td>
@@ -93,24 +106,10 @@ function SnakeTable({ snakeList, updateField, setUpdateField, updateValue, setUp
               <td>{val.斑紋}</td>
               <td>{val.頭部形狀}</td>
               <td>{val.Antivenom_ID}</td>
-              <td className="actions">
-                <select defaultValue="" onChange={(event) => setUpdateField(event.target.value)}>
-                  <option value="" disabled hidden>類別</option>
-                  <option value="種類">種類</option>
-                  <option value="毒性">毒性</option>
-                  <option value="出沒時間">出沒時間</option>
-                  <option value="顏色">顏色</option>
-                  <option value="斑紋">斑紋</option>
-                  <option value="頭部形狀">頭部形狀</option>
-                  <option value="Antivenom_ID">Antivenom ID</option>
-                </select>
-                {renderInputField()}
-              </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <Pagination currentPage={currentPage} totalItems={filteredSnakeList.length} itemsPerPage={itemsPerPage} handlePageChange={handlePageChange} />
     </div>
   );
 }
