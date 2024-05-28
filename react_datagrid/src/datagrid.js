@@ -28,10 +28,10 @@ const Datagrid = ({ selectedLocation }) => {
           醫院地址: hospital['醫院地址']
         }));
         setRows(formattedData);
-        setLoading(false); // 加载完成后设为 false
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching hospital data:", error);
-        setLoading(false); // 即使在出错时也设为 false
+        setLoading(false);
       }
     };
 
