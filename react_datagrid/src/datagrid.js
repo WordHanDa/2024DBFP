@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 import MapWithMarkerCluster from './map';
 
-const Datagrid = () => {
+const Datagrid = ({ selectedLocation }) => {
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState([]);
   const [error, setError] = useState(null);
@@ -10,11 +10,10 @@ const Datagrid = () => {
   const [selectedRows, setSelectedRows] = useState([]);
 
   const columns = [
-    { field: '醫療院所名稱', headerName: '醫療院所名稱', width: 200 },
-    { field: '抗蛇毒血清種類', headerName: '抗蛇毒血清種類', width: 200 },
-    { field: '經度', headerName: '經度', width: 200 },
-    { field: '緯度', headerName: '緯度', width: 200 },
+    { field: '醫院名稱', headerName: '醫院名稱', width: 200 },
+    { field: '醫院電話', headerName: '醫院電話', width: 200 },
     { field: '醫事機構代碼', headerName: '醫事機構代碼', width: 200 },
+    { field: '醫院地址', headerName: '醫院地址', width: 400 },
   ];
 
   useEffect(() => {
@@ -30,11 +29,10 @@ const Datagrid = () => {
         const rowsWithIds = data.map((row, index) => ({ ...row, id: index + 1 }));
 
         setRows(rowsWithIds);
-        setFilteredRows(rowsWithIds); // Initialize filtered rows with all rows
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
         setError(error);
-      } finally {
         setLoading(false);
       }
     };
@@ -42,42 +40,45 @@ const Datagrid = () => {
     fetchData();
   }, []);
 
-  const handleSearch = (event) => {
-    const searchInput = event.target.value.toLowerCase();
-    const filteredData = rows.filter(data => 
-      data.醫療院所名稱.toLowerCase().includes(searchInput)
-    );
-    setFilteredRows(filteredData);
-  };
+  useEffect(() => {
+    const applyFilters = () => {
+      const filteredData = rows.filter(row => 
+        row['醫院地址'].includes(selectedLocation)
+      );
+      setFilteredRows(filteredData);
+    };
+
+    if (rows.length > 0) {
+      applyFilters();
+    }
+  }, [selectedLocation, rows]);
 
   const handleSelectionChange = (selectionModel) => {
-    console.log("Selection Model:", selectionModel); // Add this line
     const selectedIDs = new Set(selectionModel);
     const selectedData = rows.filter(row => selectedIDs.has(row.id));
     setSelectedRows(selectedData);
-    console.log("Selected Rows:");
-    selectedData.forEach(row => {
-      console.log(`Latitude: ${row.緯度}, Longitude: ${row.經度}`);
-    });
   };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div>
-      <div style={{ height: 400, width: '80%', margin: 'auto' }}>
-        <input type="text" placeholder="輸入名稱進行搜尋..." onChange={handleSearch} />
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div style={{ textAlign: 'center' }}>
+        <h1>附近的醫院或衛生所</h1>
+      </div>
+      <div style={{ height: 400, width: '80%' }}>
         <DataGrid
           rows={filteredRows}
           columns={columns}
           pageSize={5}
-          rowsPerPageOptions={[5, 10, 20]}
           checkboxSelection
-          onSelectionModelChange={(newSelection) => handleSelectionChange(newSelection)}
+          onSelectionModelChange={handleSelectionChange}
         />
       </div>
-      <MapWithMarkerCluster selectedRows={selectedRows} />
+      <div style={{ width: '80%', marginTop: 50 }}>
+        <MapWithMarkerCluster selectedRows={selectedRows} />
+      </div>
     </div>
   );
 }
