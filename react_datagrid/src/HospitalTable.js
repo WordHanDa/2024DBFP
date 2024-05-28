@@ -5,8 +5,6 @@ function HospitalTable({
 }) {
   return (
     <div className="hospitals">
-      <div className="search">
-      </div>
       <table className="hospital-table">
         <thead>
           <tr>
