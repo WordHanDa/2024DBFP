@@ -7,7 +7,6 @@ import SnakeFeature from './snakefeature';
 import ImageListWithTitle from './imagelistwithtitle';
 import ParentComponent from './parentcomponent';
 import SnakeTable from './SnakeTable';
-import HospitalTable from './HospitalTable';
 
 const containerStyle = { 
   display: 'flex', 
@@ -18,7 +17,7 @@ const containerStyle = {
 };
 
 function App() {
-  const [selectedTable, setSelectedTable] = useState("snake");
+  const [selectedTable] = useState("snake");
 
   // Snake state variables
   const [snakeList, setSnakeList] = useState([]);
