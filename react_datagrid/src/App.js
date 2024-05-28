@@ -1,12 +1,12 @@
-import React from 'react';
-import Datagrid from './datagrid';
+import React, { useState, useEffect } from 'react';
+import Axios from 'axios';
 import SeurmMapTitle from './ptitle';
-import MapLoaction from './selectLoacation'
-import SerumMapFooter from './pfooter'
-import SerumMapHeader from './pheader'
+import SerumMapFooter from './pfooter';
+import SerumMapHeader from './pheader';
 import SnakeFeature from './snakefeature';
 import ImageListWithTitle from './imagelistwithtitle';
 import ParentComponent from './parentcomponent';
+import SnakeTable from './SnakeTable';
 
 const containerStyle = { 
   display: 'flex', 
@@ -17,6 +17,33 @@ const containerStyle = {
 };
 
 function App() {
+  const [selectedTable] = useState("snake");
+
+  // Snake state variables
+  const [snakeList, setSnakeList] = useState([]);
+
+  // Hospital state variables
+  const [hospitalList, setHospitalList] = useState([]);
+
+  const getSnakes = () => {
+    Axios.get("http://localhost:3001/snakes").then((response) => {
+      setSnakeList(response.data);
+    });
+  };
+  const getHospitals = () => {
+    Axios.get("http://localhost:3001/hospitals").then((response) => {
+      setHospitalList(response.data);
+    });
+  };
+
+  useEffect(() => {
+    if (selectedTable === "snake") {
+      getSnakes();
+    } else {
+      getHospitals();
+    }
+  }, [selectedTable]);
+
   return (
     <div className="App">
       <div>
@@ -32,11 +59,12 @@ function App() {
         <ImageListWithTitle />
       </div>
       <div>
-        <ParentComponent />
+        <ParentComponent hospitalList={hospitalList}/>
       </div>
       <div>
         <SerumMapFooter />
       </div>
+      <SnakeTable snakeList={snakeList}/>
     </div>
   );
 }

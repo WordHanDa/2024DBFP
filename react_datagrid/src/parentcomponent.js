@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import MapLocation from './selectLoacation';
+import SelectLocation from './selectLocation';
 import Datagrid from './datagrid';
 
-const ParentComponent = () => {
+const ParentComponent = ({ hospitalList }) => {
   const [selectedLocation, setSelectedLocation] = useState('');
 
   const handleLocationChange = (location) => {
@@ -11,9 +11,11 @@ const ParentComponent = () => {
 
   return (
     <div>
-      <MapLocation handleLocationChange={handleLocationChange} />
-      {/* Pass selectedLocation to Datagrid */}
-      <Datagrid selectedLocation={selectedLocation} />
+      <SelectLocation handleLocationChange={handleLocationChange} />
+      <Datagrid 
+        hospitalList={hospitalList}
+        selectedLocation={selectedLocation} 
+      />
     </div>
   );
 };

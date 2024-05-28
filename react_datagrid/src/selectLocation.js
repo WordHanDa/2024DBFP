@@ -14,8 +14,8 @@ const styleArgument = {
   color: 'black' 
 };
 
-const MapLocation = ({ handleLocationChange }) => {
-  const [location, setLocation] = React.useState('台北市');
+const SelectLocation = ({ handleLocationChange }) => {
+  const [location, setLocation] = React.useState('');
 
   const handleChange = (event) => {
     const selectedLocation = event.target.value;
@@ -48,7 +48,7 @@ const MapLocation = ({ handleLocationChange }) => {
   );
 }
 
-export default MapLocation;
+export default SelectLocation;
 
 
 
