@@ -65,19 +65,7 @@ function App() {
       <div>
         <SerumMapFooter />
       </div>
-      <div>
-        <button onClick={() => setSelectedTable("snake")}>Snake Table</button>
-        <button onClick={() => setSelectedTable("hospital")}>Hospital Table</button>
-      </div>
-      {selectedTable === "snake" ? (
-        <SnakeTable
-          snakeList={snakeList}
-        />
-      ) : (
-        <HospitalTable
-          hospitalList={hospitalList}
-        />
-      )}
+      <SnakeTable snakeList={snakeList}/>
     </div>
   );
 }
