@@ -1,7 +1,51 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import Axios from "axios";
 import Pagination from "./Pagination";
 
 function SnakeTable({ snakeList, updateField, setUpdateField, updateValue, setUpdateValue, updateSnake, deleteSnake, searchSnake, setSearchSnake, currentPage, itemsPerPage, handlePageChange }) {
+  const [poisonOptions, setPoisonOptions] = useState([]);
+  const [colorOptions, setColorOptions] = useState([]);
+  const [patternOptions, setPatternOptions] = useState([]);
+  const [headShapeOptions, setHeadShapeOptions] = useState([]);
+
+  useEffect(() => {
+    // Fetch poison options from backend when component mounts
+    Axios.get("http://localhost:3001/poisonLevels")
+      .then((response) => {
+        setPoisonOptions(response.data.map(poison => poison['蛇的毒性']));
+      })
+      .catch((error) => {
+        console.error('Error fetching poison types:', error);
+      });
+
+    // Fetch color options from backend when component mounts
+    Axios.get("http://localhost:3001/snakeColors")
+      .then((response) => {
+        setColorOptions(response.data.map(color => color['蛇的顏色']));
+      })
+      .catch((error) => {
+        console.error('Error fetching color options:', error);
+      });
+
+    // Fetch pattern options from backend when component mounts
+    Axios.get("http://localhost:3001/snakePatterns")
+      .then((response) => {
+        setPatternOptions(response.data.map(pattern => pattern['蛇的斑紋']));
+      })
+      .catch((error) => {
+        console.error('Error fetching pattern options:', error);
+      });
+
+    // Fetch head shape options from backend when component mounts
+    Axios.get("http://localhost:3001/head")
+      .then((response) => {
+        setHeadShapeOptions(response.data.map(headShape => headShape['頭部形狀']));
+      })
+      .catch((error) => {
+        console.error('Error fetching head shape options:', error);
+      });
+  }, []);
+
   const filteredSnakeList = snakeList.filter((val) => val.種類.toLowerCase().includes(searchSnake.toLowerCase()));
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -11,54 +55,55 @@ function SnakeTable({ snakeList, updateField, setUpdateField, updateValue, setUp
     switch (updateField) {
       case "毒性":
         return (
-          <select onChange={(event) => setUpdateValue(event.target.value)}>
-            <option value="無毒">無毒</option>
-            <option value="強">強</option>
-            <option value="弱">弱</option>
+          <select value={updateValue} onChange={(event) => setUpdateValue(event.target.value)}>
+            {poisonOptions.map((option, index) => (
+              <option key={index} value={option}>{option}</option>
+            ))}
           </select>
         );
       case "出沒時間":
         return (
-          <select onChange={(event) => setUpdateValue(event.target.value)}>
+          <select value={updateValue} onChange={(event) => setUpdateValue(event.target.value)}>
             <option value="日行性">日行性</option>
             <option value="夜行性">夜行性</option>
           </select>
         );
       case "顏色":
         return (
-          <select onChange={(event) => setUpdateValue(event.target.value)}>
-            <option value="紅色">紅色</option>
-            <option value="黃色">黃色</option>
-            <option value="綠色">綠色</option>
-            <option value="褐色">褐色</option>
+          <select value={updateValue} onChange={(event) => setUpdateValue(event.target.value)}>
+            {colorOptions.map((option, index) => (
+              <option key={index} value={option}>{option}</option>
+            ))}
           </select>
         );
       case "斑紋":
         return (
-          <select onChange={(event) => setUpdateValue(event.target.value)}>
-            <option value="環狀">環狀</option>
-            <option value="V字">V字</option>
+          <select value={updateValue} onChange={(event) => setUpdateValue(event.target.value)}>
+            {patternOptions.map((option, index) => (
+              <option key={index} value={option}>{option}</option>
+            ))}
           </select>
         );
       case "頭部形狀":
         return (
-          <select onChange={(event) => setUpdateValue(event.target.value)}>
-            <option value="橢圓形">橢圓形</option>
-            <option value="三角形">三角形</option>
+          <select value={updateValue} onChange={(event) => setUpdateValue(event.target.value)}>
+            {headShapeOptions.map((option, index) => (
+              <option key={index} value={option}>{option}</option>
+            ))}
           </select>
         );
       case "Antivenom_ID":
         return (
-          <select onChange={(event) => setUpdateValue(event.target.value)}>
+          <select value={updateValue} onChange={(event) => setUpdateValue(event.target.value)}>
             <option value="">無</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
+            <option value="抗百步蛇毒血清">抗百步蛇毒血清</option>
+            <option value="抗雨傘節及飯匙倩蛇毒血清">抗雨傘節及飯匙倩蛇毒血清</option>
+            <option value="抗龜殼花及赤尾鮐蛇毒血清">抗龜殼花及赤尾鮐蛇毒血清</option>
+            <option value="抗鎖鏈蛇毒血清">抗鎖鏈蛇毒血清</option>
           </select>
         );
       default:
-        return <input type="text" placeholder="Value" onChange={(event) => setUpdateValue(event.target.value)} />;
+        return <input type="text" placeholder="Value" value={updateValue} onChange={(event) => setUpdateValue(event.target.value)} />;
     }
   };
 
