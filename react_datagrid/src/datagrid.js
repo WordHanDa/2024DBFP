@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 import MapWithMarkerCluster from './map';
+import Axios from 'axios';
 
 const Datagrid = ({ selectedLocation }) => {
   const [loading, setLoading] = useState(true);
-  const [rows, setRows] = useState([
-    { id: 1, 醫院名稱: '臺北市立聯合醫院', 醫院電話: '25553000', 醫事機構代碼: '101090517', 醫院地址: '台北市大同區鄭州路１４５號' }
-  ]);
+  const [rows, setRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
 
@@ -18,10 +17,31 @@ const Datagrid = ({ selectedLocation }) => {
   ];
 
   useEffect(() => {
-    setLoading(false);
+    const getHospitals = async () => {
+      try {
+        const response = await Axios.get("http://localhost:3001/hospitals");
+        const formattedData = response.data.map(hospital => ({
+          id: hospital['醫事機構代碼'], // 使用 '醫事機構代碼' 作為唯一ID
+          醫院名稱: hospital['醫院名稱'],
+          醫院電話: hospital['醫院電話'],
+          醫事機構代碼: hospital['醫事機構代碼'],
+          醫院地址: hospital['醫院地址']
+        }));
+        setRows(formattedData);
+        setLoading(false); // 加载完成后设为 false
+      } catch (error) {
+        console.error("Error fetching hospital data:", error);
+        setLoading(false); // 即使在出错时也设为 false
+      }
+    };
+
+    getHospitals();
+  }, []);
+
+  useEffect(() => {
     const applyFilters = () => {
       const filteredData = rows.filter(row => 
-        row['醫院地址'].includes(selectedLocation)
+        row['醫院地址'] && row['醫院地址'].includes(selectedLocation)
       );
       setFilteredRows(filteredData);
     };

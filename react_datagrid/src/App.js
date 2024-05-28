@@ -22,11 +22,9 @@ function App() {
 
   // Snake state variables
   const [snakeList, setSnakeList] = useState([]);
-  const [searchSnake, setSearchSnake] = useState("");
 
   // Hospital state variables
   const [hospitalList, setHospitalList] = useState([]);
-  const [searchHospital, setSearchHospital] = useState("");
 
   const getSnakes = () => {
     Axios.get("http://localhost:3001/snakes").then((response) => {
@@ -62,7 +60,7 @@ function App() {
         <ImageListWithTitle />
       </div>
       <div>
-        <ParentComponent />
+        <ParentComponent hospitalList={hospitalList}/>
       </div>
       <div>
         <SerumMapFooter />
@@ -74,15 +72,11 @@ function App() {
       {selectedTable === "snake" ? (
         <SnakeTable
           snakeList={snakeList}
-          searchSnake={searchSnake}
-          setSearchSnake={setSearchSnake}
         />
       ) : (
-          <HospitalTable
-            hospitalList={hospitalList}
-            searchHospital={searchHospital}
-            setSearchHospital={setSearchHospital}
-          />
+        <HospitalTable
+          hospitalList={hospitalList}
+        />
       )}
     </div>
   );

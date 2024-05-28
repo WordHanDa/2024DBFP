@@ -7,9 +7,7 @@ function SnakeTable({
   searchSnake,
   setSearchSnake
 }) {
-  const filteredSnakeList = snakeList.filter((val) =>
-    val.種類.toLowerCase().includes(searchSnake.toLowerCase())
-  );
+  
 
   const renderInputField = () => {
     switch (updateField) {
@@ -75,12 +73,6 @@ function SnakeTable({
   return (
     <div className="snakes">
       <div className="search">
-        <input
-          type="text"
-          placeholder="Search Snakes"
-          value={searchSnake}
-          onChange={(event) => setSearchSnake(event.target.value)}
-        />
       </div>
       <table className="snake-table">
         <thead>
@@ -96,8 +88,8 @@ function SnakeTable({
           </tr>
         </thead>
         <tbody>
-          {filteredSnakeList.map((val, key) => (
-            <tr key={key}>
+          {snakeList.map((val) => (
+            <tr>
               <td>{val.Snake_ID}</td>
               <td>{val.種類}</td>
               <td>{val.毒性}</td>
