@@ -10,7 +10,7 @@ const db = mysql.createConnection({
   user: "root",
   host: "localhost",
   password: "",
-  database: "snakedatabase",
+  database: "20240528",
 });
 
 // Snake endpoints
