@@ -66,17 +66,6 @@ app.delete("/deleteSnake/:id", (req, res) => {
   });
 });
 
-app.get("/getPoisonTypes", (req, res) => {
-  db.query("SELECT 蛇的毒性 FROM 蛇的毒性", (err, result) => {
-    if (err) {
-      console.log(err);
-      res.status(500).send(err);
-    } else {
-      res.send(result);
-    }
-  });
-});
-
 // Hospital endpoints
 app.post("/createHospital", (req, res) => {
   const { code, name, address, phone } = req.body;
@@ -129,8 +118,8 @@ app.delete("/deleteHospital/:code", (req, res) => {
   });
 });
 
-app.get("/getPoisonTypes", (req, res) => {
-  db.query("SELECT 蛇的毒性 FROM 蛇的毒性", (err, result) => {
+app.get("/poisonLevels", (req, res) => {
+  db.query("SELECT * FROM 蛇的毒性", (err, result) => {
     if (err) {
       console.log(err);
       res.status(500).send(err);
@@ -140,6 +129,37 @@ app.get("/getPoisonTypes", (req, res) => {
   });
 });
 
+app.get("/snakeColors", (req, res) => {
+  db.query("SELECT * FROM 蛇的顏色", (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.get("/snakePatterns", (req, res) => {
+  db.query("SELECT * FROM `蛇的斑紋`", (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.get("/head", (req, res) => {
+  db.query("SELECT * FROM `蛇的頭部形狀`", (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
 
 app.listen(3001, () => {
   console.log("Yey, your server is running on port 3001");
