@@ -7,7 +7,6 @@ import Select from '@mui/material/Select';
 
 const SelectLocation = ({ handleLocationChange }) => {
   const [location, setLocation] = React.useState('');
-
   const handleChange = (event) => {
     const selectedLocation = event.target.value;
     setLocation(selectedLocation);
