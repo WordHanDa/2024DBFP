@@ -29,13 +29,12 @@ const SelectLocation = ({ handleLocationChange }) => {
         <h1 style={styleArgument}>選擇被咬的位置</h1>
       </div>
       <FormControl variant="outlined" sx={{ minWidth: 120 }}>
-        <InputLabel id="location-select-label" sx={{ fontSize: '1rem' }}>城市</InputLabel>
+        <InputLabel id="location-select-label" >城市</InputLabel>
         <Select
           labelId="location-select-label"
           value={location}
           onChange={handleChange}
           label="位置"
-          sx={{ fontSize: '1rem', height: '40px' }}
         >
           <MenuItem value={''}><em>None</em></MenuItem>
           <MenuItem value={'基隆市'}>基隆市</MenuItem>
@@ -49,7 +48,3 @@ const SelectLocation = ({ handleLocationChange }) => {
 }
 
 export default SelectLocation;
-
-
-
-
