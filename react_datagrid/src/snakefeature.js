@@ -1,20 +1,10 @@
 import React from 'react';
-
-
-const styleArgument = {
-  fontSize: '50px',
-  color: 'black' 
-};
-const containerStyle = { 
-  position: 'relative', 
-  textAlign: 'center', 
-  padding: '10px' 
-};
+import "./App.css";
 
 const SnakeFeature = () => { 
   return (
-    <div style={containerStyle}>
-        <h1 style={styleArgument}>蛇的特徵及種類</h1>
+    <div className="containerStyle">
+        <h1 className="styleArgument">蛇的特徵及種類</h1>
     </div>
   ); 
 }

@@ -1,18 +1,9 @@
+import './App.css'
 import React from 'react';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-
-const containerStyle = { 
-  position: 'relative', 
-  textAlign: 'center', 
-  padding: '20px' 
-};
-const styleArgument = {
-  fontSize: '50px',
-  color: 'black' 
-};
 
 const SelectLocation = ({ handleLocationChange }) => {
   const [location, setLocation] = React.useState('');
@@ -24,9 +15,9 @@ const SelectLocation = ({ handleLocationChange }) => {
   };
 
   return (
-    <div style={containerStyle}>
+    <div className="containerStyle">
       <div>
-        <h1 style={styleArgument}>選擇被咬的位置</h1>
+        <h1 className="styleArgument">選擇被咬的位置</h1>
       </div>
       <FormControl variant="outlined" sx={{ minWidth: 120 }}>
         <InputLabel id="location-select-label" >城市</InputLabel>
