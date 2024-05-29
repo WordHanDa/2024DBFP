@@ -157,8 +157,8 @@ const ImageListWithTitle = () => {
               }}
             >
               <img
-                srcSet={`./snake_image/${item.種類}.jpg?w=248&fit=crop&auto=format&dpr=2 2x`}
-                src={`./snake_image/${item.種類}.jpg?w=248&fit=crop&auto=format`}
+                srcSet={`./snake_image/${item.種類}.jpg`}
+                src={`./snake_image/${item.種類}.jpg`}
                 alt={item.種類}
                 loading="lazy"
                 style={{ width: '100%', height: '100%' }}
