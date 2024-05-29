@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import SelectLocation from './selectLocation';
 import Datagrid from './datagrid';
 
-const ParentComponent = ({ hospitalList }) => {
+const ParentComponent = () => {
   const [selectedLocation, setSelectedLocation] = useState('');
 
   const handleLocationChange = (location) => {
@@ -13,7 +13,6 @@ const ParentComponent = ({ hospitalList }) => {
     <div>
       <SelectLocation handleLocationChange={handleLocationChange} />
       <Datagrid 
-        hospitalList={hospitalList}
         selectedLocation={selectedLocation} 
       />
     </div>

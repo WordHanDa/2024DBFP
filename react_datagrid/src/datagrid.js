@@ -34,7 +34,6 @@ const Datagrid = ({ selectedLocation }) => {
         setLoading(false);
       }
     };
-
     getHospitals();
   }, []);
 

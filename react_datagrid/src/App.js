@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import Axios from 'axios';
+import React, {useState} from 'react';
 import SeurmMapTitle from './ptitle';
 import SerumMapFooter from './pfooter';
 import SerumMapHeader from './pheader';
@@ -17,22 +16,6 @@ const containerStyle = {
 };
 
 function App() {
-  const [selectedTable] = useState("snake");
-
-  // Snake state variables
-  
-
-  // Hospital state variables
-  const [hospitalList, setHospitalList] = useState([]);
-
-
-  const getHospitals = () => {
-    Axios.get("http://localhost:3001/hospitals").then((response) => {
-      setHospitalList(response.data);
-    });
-  };
-
-
   return (
     <div className="App">
       <div>
@@ -48,7 +31,7 @@ function App() {
         <ImageListWithTitle />
       </div>
       <div>
-        <ParentComponent hospitalList={hospitalList}/>
+        <ParentComponent/>
       </div>
       <div>
         <SerumMapFooter />
