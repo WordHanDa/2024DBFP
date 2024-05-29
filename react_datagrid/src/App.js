@@ -20,29 +20,18 @@ function App() {
   const [selectedTable] = useState("snake");
 
   // Snake state variables
-  const [snakeList, setSnakeList] = useState([]);
+  
 
   // Hospital state variables
   const [hospitalList, setHospitalList] = useState([]);
 
-  const getSnakes = () => {
-    Axios.get("http://localhost:3001/snakes").then((response) => {
-      setSnakeList(response.data);
-    });
-  };
+
   const getHospitals = () => {
     Axios.get("http://localhost:3001/hospitals").then((response) => {
       setHospitalList(response.data);
     });
   };
 
-  useEffect(() => {
-    if (selectedTable === "snake") {
-      getSnakes();
-    } else {
-      getHospitals();
-    }
-  }, [selectedTable]);
 
   return (
     <div className="App">
@@ -64,7 +53,7 @@ function App() {
       <div>
         <SerumMapFooter />
       </div>
-      <SnakeTable snakeList={snakeList}/>
+      <SnakeTable/>
     </div>
   );
 }

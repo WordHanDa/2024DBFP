@@ -1,8 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
+import Axios from 'axios';
 
-function SnakeTable({
-  snakeList,
-}) {
+function SnakeTable() {
+  const [snakeList, setSnakeList] = useState([]);
+
+  // Function to fetch snake data from the server
+  const getSnakes = () => {
+    Axios.get("http://localhost:3001/snakes")
+      .then((response) => {
+        setSnakeList(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching snake data:', error);
+      });
+  };
+
+  // Fetch snake data when the component mounts
+  useEffect(() => {
+    getSnakes();
+  }, []);
 
   return (
     <div className="snakes">
@@ -20,8 +36,8 @@ function SnakeTable({
           </tr>
         </thead>
         <tbody>
-          {snakeList.map((val) => (
-            <tr>
+          {snakeList.map((val, index) => (
+            <tr key={index}>
               <td>{val.Snake_ID}</td>
               <td>{val.種類}</td>
               <td>{val.毒性}</td>
