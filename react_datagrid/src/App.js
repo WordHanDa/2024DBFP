@@ -8,7 +8,7 @@ import ParentComponent from './parentcomponent';
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <div>
         <SerumMapHeader />
       </div>
