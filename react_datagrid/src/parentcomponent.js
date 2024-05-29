@@ -9,12 +9,10 @@ const ParentComponent = () => {
     setSelectedLocation(location);
   };
 
-  return (
+  return(
     <div>
       <SelectLocation handleLocationChange={handleLocationChange} />
-      <Datagrid 
-        selectedLocation={selectedLocation} 
-      />
+      <Datagrid selectedLocation={selectedLocation}/>
     </div>
   );
 };

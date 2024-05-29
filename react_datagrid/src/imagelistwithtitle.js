@@ -27,7 +27,6 @@ const ImageListWithTitle = () => {
   const [headShapeFilter, setHeadShapeFilter] = useState('');
   const [snakeList, setSnakeList] = useState([]);
 
-  const [poisonOptions, setPoisonOptions] = useState([]);
   const [colorOptions, setColorOptions] = useState([]);
   const [patternOptions, setPatternOptions] = useState([]);
   const [headShapeOptions, setHeadShapeOptions] = useState([]);
@@ -59,16 +58,6 @@ const ImageListWithTitle = () => {
       .catch((error) => {
         console.error('Error fetching snake data:', error);
       });
-
-    // Fetch poison options from backend when component mounts
-    Axios.get("http://localhost:3001/poisonLevels")
-      .then((response) => {
-        setPoisonOptions(response.data.map(poison => poison['蛇的毒性']));
-      })
-      .catch((error) => {
-        console.error('Error fetching poison types:', error);
-      });
-
     // Fetch color options from backend when component mounts
     Axios.get("http://localhost:3001/snakeColors")
       .then((response) => {
@@ -77,7 +66,6 @@ const ImageListWithTitle = () => {
       .catch((error) => {
         console.error('Error fetching color options:', error);
       });
-
     // Fetch pattern options from backend when component mounts
     Axios.get("http://localhost:3001/snakePatterns")
       .then((response) => {
@@ -86,7 +74,6 @@ const ImageListWithTitle = () => {
       .catch((error) => {
         console.error('Error fetching pattern options:', error);
       });
-
     // Fetch head shape options from backend when component mounts
     Axios.get("http://localhost:3001/head")
       .then((response) => {

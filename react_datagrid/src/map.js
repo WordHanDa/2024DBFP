@@ -5,7 +5,7 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
   const [map, setMap] = useState(null);
   const [center, setCenter] = useState({ lat: 25.0718, lng: 121.591982 }); // Default center
   const [zoom, setZoom] = useState(14); // Default zoom level
-  const [markers, setMarkers] = useState([]);
+  const markersRef = React.useRef([]);
 
   const geocodeAddress = (address) => {
     return new Promise((resolve, reject) => {
@@ -44,7 +44,8 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
   useEffect(() => {
     if (map) {
       // Clear existing markers
-      markers.forEach(marker => marker.setMap(null));
+      markersRef.current.forEach(marker => marker.setMap(null));
+      markersRef.current = [];
 
       if (selectedRows.length > 0) {
         // Geocode addresses and create markers
@@ -72,14 +73,14 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
         });
 
         Promise.all(newMarkersPromises).then(newMarkers => {
-          setMarkers(newMarkers.filter(marker => marker)); // Filter out any undefined markers
+          markersRef.current = newMarkers.filter(marker => marker); // Filter out any undefined markers
         });
       }
     }
   }, [map, selectedRows]);
 
   return (
-    <LoadScript googleMapsApiKey="AIzaSyAFsDAifUDGbzyqqHhf5p415ZvHCPacJZY"> {/* Replace YOUR_API_KEY with your actual API key */}
+    <LoadScript googleMapsApiKey="AIzaSyAFsDAifUDGbzyqqHhf5p415ZvHCPacJZY"> {/* Replace with your actual API key */}
       <GoogleMap
         mapContainerStyle={{ width: '100%', height: '600px' }}
         center={center}

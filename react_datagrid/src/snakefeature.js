@@ -19,5 +19,4 @@ const SnakeFeature = () => {
   ); 
 }
 
-
 export default SnakeFeature;

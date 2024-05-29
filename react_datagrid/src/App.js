@@ -1,11 +1,9 @@
-import React, {useState} from 'react';
 import SeurmMapTitle from './ptitle';
 import SerumMapFooter from './pfooter';
 import SerumMapHeader from './pheader';
 import SnakeFeature from './snakefeature';
 import ImageListWithTitle from './imagelistwithtitle';
 import ParentComponent from './parentcomponent';
-import SnakeTable from './SnakeTable';
 
 const containerStyle = { 
   display: 'flex', 
@@ -36,7 +34,6 @@ function App() {
       <div>
         <SerumMapFooter />
       </div>
-      <SnakeTable/>
     </div>
   );
 }
