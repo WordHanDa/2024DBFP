@@ -161,6 +161,19 @@ app.get("/head", (req, res) => {
   });
 });
 
+// Add this to your existing server code
+app.get("/cities", (req, res) => {
+  db.query("SELECT city FROM city", (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+
 app.listen(3001, () => {
   console.log("Yey, your server is running on port 3001");
 });
