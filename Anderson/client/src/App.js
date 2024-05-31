@@ -12,6 +12,8 @@ import PatternForm from "./PatternForm";
 import PatternTable from "./PatternTable"; 
 import HeadShapeForm from "./HeadShapeForm"; 
 import HeadShapeTable from "./HeadShapeTable"; 
+import LocationForm from "./LocationForm"; 
+import LocationTable from "./LocationTable"; 
 
 function App() {
   const [selectedTable, setSelectedTable] = useState("snake");
@@ -58,6 +60,15 @@ function App() {
   const [headShapeList, setHeadShapeList] = useState([]);
   const [updateHeadShapeValue, setUpdateHeadShapeValue] = useState("");
   const [searchHeadShape, setSearchHeadShape] = useState("");
+
+  // Antivenom Location state variables
+  const [LocationHospital, setLocationHospital] = useState("");
+  const [LocationAntivenom, setLocationAntivenom] = useState("");
+  const [LocationHospitalNumber, setLocationHospitalNumber] = useState("");
+  const [LocationList, setLocationList] = useState([]);
+  const [updateLocationField, setUpdateLocationField] = useState("醫院名稱");
+  const [updateLocationValue, setUpdateLocationValue] = useState("");
+  const [searchLocation, setSearchLocation] = useState("");
 
   // page
   const [currentPage, setCurrentPage] = useState(1);
@@ -279,6 +290,54 @@ function App() {
     }
   };
 
+  //-----------------------------------
+  const addLocation = () => {
+    Axios.post("http://localhost:3001/createLocation", {
+      LocationHospital : LocationHospital,
+      LocationAntivenom : LocationAntivenom,
+      LocationHospitalNumber : LocationHospitalNumber
+    }).then(() => {
+      setLocationHospital("");
+      setLocationAntivenom("");
+      setLocationHospitalNumber("");
+      getLocations();
+    });
+  };
+
+  const getLocations = () => {
+    Axios.get("http://localhost:3001/Location").then((response) => {
+      setLocationList(response.data);
+    });
+  };
+
+  const updateLocation = (hospital, medicine, medicalCode, field, value) => {
+    Axios.put("http://localhost:3001/updateLocation", {
+      hospital,
+      medicine,
+      medicalCode,
+      field,
+      value,
+    }).then(() => {
+      setLocationList(
+        LocationList.map((val) => {
+          if (val['醫院名稱'] === hospital && val['藥品名稱'] === medicine && val['醫事機構代碼'] === medicalCode) {
+            return { ...val, [field]: value };
+          }
+          return val;
+        })
+      );
+    });
+  };
+
+  const deleteLocation = (hospital, medicine, medicalCode) => {
+    if (window.confirm(`Are you sure you want to delete the location ${hospital}, ${medicine}, ${medicalCode}?`)) {
+      Axios.delete(`http://localhost:3001/deleteLocation/${hospital}/${medicine}/${medicalCode}`).then(() => {
+        setLocationList(LocationList.filter((val) => val['醫院名稱'] !== hospital || val['藥品名稱'] !== medicine || val['醫事機構代碼'] !== medicalCode));
+      });
+    }
+  };
+  
+
 
   //--------------------------------------
   const handlePageChange = (pageNumber) => {
@@ -294,8 +353,10 @@ function App() {
       getColors();
     } else if (selectedTable === "pattern"){
       getPatterns();
-    } else {
+    } else if (selectedTable === "headShape"){
       getHeadShapes();
+    } else {
+      getLocations();
     }
   }, [selectedTable]);
 
@@ -407,7 +468,7 @@ function App() {
                 handlePageChange={handlePageChange}
               />
             </>
-          ) : (
+          ) : selectedTable === "headShape" ? (
             <>
           <HeadShapeForm
             headShapeName={headShapeName}
@@ -422,6 +483,32 @@ function App() {
             deleteHeadShape={deleteHeadShape}
             searchHeadShape={searchHeadShape}
             setSearchHeadShape={setSearchHeadShape}
+            currentPage={currentPage}
+            itemsPerPage={itemsPerPage}
+            handlePageChange={handlePageChange}
+          />
+          </>
+          ) : (
+            <>
+          <LocationForm
+            LocationHospital={LocationHospital}
+            setLocationHospital={setLocationHospital}
+            LocationAntivenom={LocationAntivenom}
+            setLocationAntivenom={setLocationAntivenom}
+            LocationHospitalNumber={LocationHospitalNumber}
+            setLocationHospitalNumber={setLocationAntivenom}
+            addLocation={addLocation}
+          />
+          <LocationTable
+            LocationList={LocationList}
+            updateLocationField={updateLocationField}
+            setUpdateLocationField={setUpdateLocationField}
+            updateLocationValue={updateLocationValue}
+            setUpdateLocationValue={setUpdateLocationValue}
+            updateLocation={updateLocation}
+            deleteLocation={deleteLocation}
+            searchLocation={searchLocation}
+            setSearchLocation={setSearchLocation}
             currentPage={currentPage}
             itemsPerPage={itemsPerPage}
             handlePageChange={handlePageChange}

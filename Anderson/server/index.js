@@ -328,6 +328,84 @@ app.delete('/deleteHeadShape/:headShape', (req, res) => {
   );
 });
 
+//----------------------------------------
+app.post("/createLocation", (req, res) => {
+  const { hname, aname, hnumber} = req.body;
+  db.query(
+    "INSERT INTO 存放位置 (醫院名稱, 藥品名稱, 醫事機構代碼) VALUES (?,?,?)",
+    [hname, aname, hnumber],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err);
+      } else {
+        res.send("Values Inserted");
+      }
+    }
+  );
+});
+
+app.get("/Location", (req, res) => {
+  db.query("SELECT * FROM 存放位置", (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.put("/updateLocation", (req, res) => {
+  const { hospital, medicine, medicalCode, field, value } = req.body;
+
+  // 构建更新语句
+  let updateQuery = "UPDATE 存放位置 SET ";
+  let queryParams = [];
+
+  // 添加要更新的字段和值到更新语句中
+  if (field === '醫院名稱' || field === '藥品名稱' || field === '醫事機構代碼') {
+    updateQuery += `${field} = ? WHERE `;
+    queryParams.push(value);
+  } else {
+    res.status(400).send("无效的字段名");
+    return;
+  }
+
+  // 添加 WHERE 条件
+  if (hospital && medicine && medicalCode) {
+    updateQuery += "醫院名稱 = ? AND 藥品名稱 = ? AND 醫事機構代碼 = ?";
+    queryParams.push(hospital, medicine, medicalCode);
+  } else {
+    res.status(400).send("缺少必要的参数");
+    return;
+  }
+
+  // 执行更新查询
+  db.query(updateQuery, queryParams, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send("更新记录时出错。");
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+
+app.delete("/deleteLocation/:hospital/:medicine/:medicalCode", (req, res) => {
+  const hospital = req.params.hospital;
+  const medicine = req.params.medicine;
+  const medicalCode = req.params.medicalCode;
+  db.query("DELETE FROM 存放位置 WHERE 醫院名稱 = ? AND 藥品名稱 = ? AND 醫事機構代碼 = ?", [hospital, medicine, medicalCode], (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+
 app.listen(3001, () => {
   console.log("Yey, your server is running on port 3001");
 });

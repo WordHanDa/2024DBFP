@@ -224,7 +224,8 @@ td {
 /* Specific styling for the color, pattern, and head shape tables */
 .color-table .actions,
 .pattern-table .actions,
-.headShape-table .actions {
+.headShape-table .actions,
+.location-table .actions {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -233,7 +234,8 @@ td {
 
 .color-table .actions-row,
 .pattern-table .actions-row,
-.headShape-table .actions-row {
+.headShape-table .actions-row,
+.location-table .actions-row {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -242,7 +244,8 @@ td {
 
 .color-table .update-button,
 .pattern-table .update-button,
-.headShape-table .update-button {
+.headShape-table .update-button,
+.location-table .update-button {
   background-color: #007bff;
   color: #fff;
   border: none;
@@ -253,13 +256,15 @@ td {
 
 .color-table .update-button:hover,
 .pattern-table .update-button:hover,
-.headShape-table .update-button:hover {
+.headShape-table .update-button:hover,
+.location-table .update-button:hover {
   background-color: #0552a3;
 }
 
 .color-table .delete-button,
 .pattern-table .delete-button,
-.headShape-table .delete-button {
+.headShape-table .delete-button,
+.location-table .delete-button {
   background-color: #dc3a4a; /* Changed to red */
   color: #fff;
   border: none;
@@ -270,7 +275,8 @@ td {
 
 .color-table .delete-button:hover,
 .pattern-table .delete-button:hover,
-.headShape-table .delete-button:hover {
+.headShape-table .delete-button:hover,
+.location-table .delete-button:hover {
   background-color: #c82333;
 }
 
