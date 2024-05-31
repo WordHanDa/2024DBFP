@@ -221,6 +221,60 @@ td {
   background-color: #c82333;
 }
 
+/* Specific styling for the color, pattern, and head shape tables */
+.color-table .actions,
+.pattern-table .actions,
+.headShape-table .actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.color-table .actions-row,
+.pattern-table .actions-row,
+.headShape-table .actions-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px; /* Adjusted gap between buttons */
+}
+
+.color-table .update-button,
+.pattern-table .update-button,
+.headShape-table .update-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px; /* Reduced padding */
+  transition: background-color 0.3s ease;
+}
+
+.color-table .update-button:hover,
+.pattern-table .update-button:hover,
+.headShape-table .update-button:hover {
+  background-color: #0552a3;
+}
+
+.color-table .delete-button,
+.pattern-table .delete-button,
+.headShape-table .delete-button {
+  background-color: #dc3a4a; /* Changed to red */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px; /* Reduced padding */
+  transition: background-color 0.3s ease;
+}
+
+.color-table .delete-button:hover,
+.pattern-table .delete-button:hover,
+.headShape-table .delete-button:hover {
+  background-color: #c82333;
+}
+
+
 .pagination {
   display: flex;
   justify-content: center;

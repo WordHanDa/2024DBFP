@@ -123,7 +123,7 @@ function SnakeTable({ snakeList, updateField, setUpdateField, updateValue, setUp
             <th>顏色</th>
             <th>斑紋</th>
             <th>頭部形狀</th>
-            <th>Antivenom ID</th>
+            <th>藥品名稱</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -147,7 +147,7 @@ function SnakeTable({ snakeList, updateField, setUpdateField, updateValue, setUp
                   <option value="顏色">顏色</option>
                   <option value="斑紋">斑紋</option>
                   <option value="頭部形狀">頭部形狀</option>
-                  <option value="Antivenom_ID">Antivenom ID</option>
+                  <option value="Antivenom_ID">藥品名稱</option>
                 </select>
                 {renderInputField()}
                 <div className="actions-row">

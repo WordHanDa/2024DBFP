@@ -6,6 +6,12 @@ import SnakeForm from "./SnakeForm";
 import SnakeTable from "./SnakeTable";
 import HospitalForm from "./HospitalForm";
 import HospitalTable from "./HospitalTable";
+import ColorForm from "./ColorForm"; 
+import ColorTable from "./ColorTable";
+import PatternForm from "./PatternForm"; 
+import PatternTable from "./PatternTable"; 
+import HeadShapeForm from "./HeadShapeForm"; 
+import HeadShapeTable from "./HeadShapeTable"; 
 
 function App() {
   const [selectedTable, setSelectedTable] = useState("snake");
@@ -19,6 +25,7 @@ function App() {
   const [pattern, setPattern] = useState("");
   const [headShape, setHeadShape] = useState("");
   const [antivenomId, setAntivenomId] = useState("");
+  const [url, seturl] = useState("");
   const [snakeList, setSnakeList] = useState([]);
   const [updateField, setUpdateField] = useState("poison");
   const [updateValue, setUpdateValue] = useState("");
@@ -34,21 +41,41 @@ function App() {
   const [updateHospitalValue, setUpdateHospitalValue] = useState("");
   const [searchHospital, setSearchHospital] = useState("");
 
+  // Color state variables
+  const [colorName, setColorName] = useState("");
+  const [colorList, setColorList] = useState([]);
+  const [updateColorValue, setUpdateColorValue] = useState("");
+  const [searchColor, setSearchColor] = useState("");
+
+  // Pattern state variables
+  const [patternName, setPatternName] = useState("");
+  const [patternList, setPatternList] = useState([]);
+  const [updatePatternValue, setUpdatePatternValue] = useState("");
+  const [searchPattern, setSearchPattern] = useState("");
+
+  // Head shape state variables
+  const [headShapeName, setHeadShapeName] = useState("");
+  const [headShapeList, setHeadShapeList] = useState([]);
+  const [updateHeadShapeValue, setUpdateHeadShapeValue] = useState("");
+  const [searchHeadShape, setSearchHeadShape] = useState("");
+
+  // page
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
   const addSnake = () => {
     Axios.post("http://localhost:3001/createSnake", {
-      snakeID: snakeID, // Ensure this matches the server-side parameter
+      snakeID: snakeID, 
       name: snakeName,
       poison: poison,
-      time: shape, // Assuming 'shape' is used for '出沒時間'
+      time: shape, 
       color: color,
       pattern: pattern,
       headShape: headShape,
       antivenomId: antivenomId,
+      url: url
     }).then(() => {
-      setSnakeID(""); // Reset all form fields
+      setSnakeID(""); 
       setSnakeName("");
       setPoison("");
       setColor("");
@@ -56,6 +83,7 @@ function App() {
       setPattern("");
       setHeadShape("");
       setAntivenomId("");
+      seturl("");
       getSnakes();
     });
   };
@@ -91,7 +119,7 @@ function App() {
       });
     }
   };
-
+  //--------------------------------
   const addHospital = () => {
     Axios.post("http://localhost:3001/createHospital", {
       code: hospitalCode,
@@ -138,7 +166,121 @@ function App() {
       });
     }
   };
+  //-------------------------------------------
+  const addColor = () => {
+    Axios.post("http://localhost:3001/createColor", {
+      name: colorName,
+    }).then(() => {
+      setColorName("");
+      getColors();
+    });
+  };
 
+  const getColors = () => {
+    Axios.get("http://localhost:3001/colors").then((response) => {
+      setColorList(response.data);
+    });
+  };
+
+  const updateColor = (name, value) => {
+    Axios.put("http://localhost:3001/updateColor", {
+      name: name,
+      value: value,
+    }).then((response) => {
+      setColorList(
+        colorList.map((val) => {
+          return val['蛇的顏色'] === name ? { ...val, '蛇的顏色': value } : val;
+        })
+      );
+    });
+  };
+
+  const deleteColor = (name) => {
+    if (window.confirm(`Are you sure you want to delete the color ${name}?`)) {
+      Axios.delete(`http://localhost:3001/deleteColor/${name}`).then((response) => {
+        setColorList(
+          colorList.filter((val) => {
+            return val['蛇的顏色'] !== name;
+          })
+        );
+      });
+    }
+  };
+
+  //--------------------------------
+  const addPattern = () => {
+    Axios.post("http://localhost:3001/createPattern", {
+      name: patternName,
+    }).then(() => {
+      setPatternName("");
+      getPatterns();
+    });
+  };
+
+  const getPatterns = () => {
+    Axios.get("http://localhost:3001/patterns").then((response) => {
+      setPatternList(response.data);
+    });
+  };
+
+  const updatePattern = (name, value) => {
+    Axios.put("http://localhost:3001/updatePattern", {
+      name,
+      value,
+    }).then((response) => {
+      setPatternList(
+        patternList.map((val) => (val['蛇的斑紋'] === name ? { ...val, '蛇的斑紋': value } : val))
+      );
+    });
+  };
+
+  const deletePattern = (name) => {
+    if (window.confirm(`Are you sure you want to delete the pattern ${name}?`)) {
+      Axios.delete(`http://localhost:3001/deletePattern/${name}`).then((response) => {
+        setPatternList(
+          patternList.filter((val) => val['蛇的斑紋'] !== name)
+        );
+      });
+    }
+  };
+
+  //-----------------------------------
+  const addHeadShape = () => {
+    Axios.post("http://localhost:3001/createHeadShape", {
+      headShapeName,
+    }).then(() => {
+      setHeadShapeName("");
+      getHeadShapes();
+    });
+  };
+
+  const getHeadShapes = () => {
+    Axios.get("http://localhost:3001/headShapes").then((response) => {
+      setHeadShapeList(response.data);
+    });
+  };
+
+  const updateHeadShape = (headShape, value) => {
+    Axios.put("http://localhost:3001/updateHeadShape", {
+      headShape,
+      value,
+    }).then(() => {
+      setHeadShapeList(
+        headShapeList.map((val) => (val['頭部形狀'] === headShape ? { ...val, 頭部形狀: value } : val))
+      );
+    });
+  };
+
+  const deleteHeadShape = (headShape) => {
+    if (window.confirm(`Are you sure you want to delete the head shape ${headShape}?`)) {
+      Axios.delete(`http://localhost:3001/deleteHeadShape/${headShape}`).then(() => {
+        setHeadShapeList(headShapeList.filter((val) => val['頭部形狀'] !== headShape));
+      });
+    }
+  };
+
+
+  //--------------------------------------
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -146,8 +288,14 @@ function App() {
   useEffect(() => {
     if (selectedTable === "snake") {
       getSnakes();
-    } else {
+    } else if (selectedTable === "hospital") {
       getHospitals();
+    } else if (selectedTable === "color"){
+      getColors();
+    } else if (selectedTable === "pattern"){
+      getPatterns();
+    } else {
+      getHeadShapes();
     }
   }, [selectedTable]);
 
@@ -173,6 +321,7 @@ function App() {
             setPattern={setPattern}
             setHeadShape={setHeadShape}
             setAntivenomId={setAntivenomId}
+            seturl={seturl}
             addSnake={addSnake}
           />
           <SnakeTable
@@ -190,7 +339,7 @@ function App() {
             handlePageChange={handlePageChange}
           />
         </>
-      ) : (
+      ) : selectedTable === "hospital" ? (
         <>
           <HospitalForm
             hospitalCode={hospitalCode}
@@ -218,6 +367,67 @@ function App() {
             handlePageChange={handlePageChange}
           />
         </>
+        ) : selectedTable === "color" ? (
+          <>
+            <ColorForm
+              colorName={colorName}
+              setColorName={setColorName}
+              addColor={addColor}
+            />
+            <ColorTable
+              colorList={colorList}
+              updateColorValue={updateColorValue}
+              setUpdateColorValue={setUpdateColorValue}
+              updateColor={updateColor}
+              deleteColor={deleteColor}
+              searchColor={searchColor}
+              setSearchColor={setSearchColor}
+              currentPage={currentPage}
+              itemsPerPage={itemsPerPage}
+              handlePageChange={handlePageChange}
+            />
+          </>
+          ) : selectedTable === "pattern" ? (
+            <>
+              <PatternForm
+                patternName={patternName}
+                setPatternName={setPatternName}
+                addPattern={addPattern}
+              />
+              <PatternTable
+                patternList={patternList}
+                updatePatternValue={updatePatternValue}
+                setUpdatePatternValue={setUpdatePatternValue}
+                updatePattern={updatePattern}
+                deletePattern={deletePattern}
+                searchPattern={searchPattern}
+                setSearchPattern={setSearchPattern}
+                currentPage={currentPage}
+                itemsPerPage={itemsPerPage}
+                handlePageChange={handlePageChange}
+              />
+            </>
+          ) : (
+            <>
+          <HeadShapeForm
+            headShapeName={headShapeName}
+            setHeadShapeName={setHeadShapeName}
+            addHeadShape={addHeadShape}
+          />
+          <HeadShapeTable
+            headShapeList={headShapeList}
+            updateHeadShapeValue={updateHeadShapeValue}
+            setUpdateHeadShapeValue={setUpdateHeadShapeValue}
+            updateHeadShape={updateHeadShape}
+            deleteHeadShape={deleteHeadShape}
+            searchHeadShape={searchHeadShape}
+            setSearchHeadShape={setSearchHeadShape}
+            currentPage={currentPage}
+            itemsPerPage={itemsPerPage}
+            handlePageChange={handlePageChange}
+          />
+        </>
+
       )}
     </div>
   );

@@ -15,10 +15,10 @@ const db = mysql.createConnection({
 
 // Snake endpoints
 app.post("/createSnake", (req, res) => {
-  const { snakeID, name, poison, time, color, pattern, headShape, antivenomId } = req.body;
+  const { snakeID, name, poison, time, color, pattern, headShape, antivenomId, url } = req.body;
   db.query(
-    "INSERT INTO 蛇的種類 (Snake_ID, 種類, 毒性, 出沒時間, 顏色, 斑紋, 頭部形狀, Antivenom_ID) VALUES (?,?,?,?,?,?,?,?)",
-    [snakeID, name, poison, time, color, pattern, headShape, antivenomId],
+    "INSERT INTO 蛇的種類 (Snake_ID, 種類, 毒性, 出沒時間, 顏色, 斑紋, 頭部形狀, 藥品名稱, 圖片URL) VALUES (?,?,?,?,?,?,?,?,?)",
+    [snakeID, name, poison, time, color, pattern, headShape, antivenomId, url],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -118,6 +118,7 @@ app.delete("/deleteHospital/:code", (req, res) => {
   });
 });
 
+//--------------
 app.get("/poisonLevels", (req, res) => {
   db.query("SELECT * FROM 蛇的毒性", (err, result) => {
     if (err) {
@@ -159,6 +160,172 @@ app.get("/head", (req, res) => {
       res.send(result);
     }
   });
+});
+
+//------------
+app.post("/createColor", (req, res) => {
+  const { name } = req.body;
+  db.query(
+    "INSERT INTO `蛇的顏色` (蛇的顏色) VALUES (?)",
+    [name],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err);
+      } else {
+        res.send("Color Added");
+      }
+    }
+  );
+});
+
+app.get("/colors", (req, res) => {
+  db.query("SELECT * FROM `蛇的顏色`", (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.put("/updateColor", (req, res) => {
+  const { name, value } = req.body;
+  db.query(
+    "UPDATE `蛇的顏色` SET 蛇的顏色 = ? WHERE 蛇的顏色 = ?",
+    [value, name],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+app.delete("/deleteColor/:name", (req, res) => {
+  const name = req.params.name;
+  db.query("DELETE FROM `蛇的顏色` WHERE 蛇的顏色 = ?", [name], (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+//------------
+app.post("/createPattern", (req, res) => {
+  const { name } = req.body;
+  db.query(
+    "INSERT INTO `蛇的斑紋` (蛇的斑紋) VALUES (?)",
+    [name],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err);
+      } else {
+        res.send("Color Added");
+      }
+    }
+  );
+});
+
+app.get("/patterns", (req, res) => {
+  db.query("SELECT * FROM `蛇的斑紋`", (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.put("/updatePattern", (req, res) => {
+  const { name, value } = req.body;
+  db.query(
+    "UPDATE `蛇的斑紋` SET 蛇的斑紋 = ? WHERE 蛇的斑紋 = ?",
+    [value, name],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+app.delete("/deletePattern/:name", (req, res) => {
+  const name = req.params.name;
+  db.query("DELETE FROM `蛇的斑紋` WHERE 蛇的斑紋 = ?", [name], (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+//----------------------------------
+app.post('/createHeadShape', (req, res) => {
+  const { headShapeName } = req.body;
+  db.query(
+    'INSERT INTO 蛇的頭部形狀 (頭部形狀) VALUES (?)',
+    [headShapeName],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send('Values Inserted');
+      }
+    }
+  );
+});
+
+app.get('/headShapes', (req, res) => {
+  db.query('SELECT * FROM 蛇的頭部形狀', (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.put('/updateHeadShape', (req, res) => {
+  const { headShape, value } = req.body;
+  db.query(
+    'UPDATE 蛇的頭部形狀 SET 頭部形狀 = ? WHERE 頭部形狀 = ?',
+    [value, headShape],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+app.delete('/deleteHeadShape/:headShape', (req, res) => {
+  const { headShape } = req.params;
+  db.query(
+    'DELETE FROM 蛇的頭部形狀 WHERE 頭部形狀 = ?',
+    [headShape],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
 });
 
 app.listen(3001, () => {
