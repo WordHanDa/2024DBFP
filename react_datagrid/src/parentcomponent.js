@@ -2,19 +2,19 @@ import React, { useState } from 'react';
 import SelectLocation from './selectLocation';
 import Datagrid from './datagrid';
 
-const ParentComponent = () => {
-  const [selectedLocation, setSelectedLocation] = useState('');
+const App = () => {
+  const [selectedLocation, setSelectedLocation] = useState({ city: '', district: '', road: '' });
 
   const handleLocationChange = (location) => {
     setSelectedLocation(location);
   };
 
-  return(
+  return (
     <div>
       <SelectLocation handleLocationChange={handleLocationChange} />
-      <Datagrid selectedLocation={selectedLocation}/>
+      <Datagrid selectedLocation={selectedLocation} />
     </div>
   );
 };
 
-export default ParentComponent;
+export default App;
