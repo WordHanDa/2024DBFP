@@ -14,6 +14,7 @@ const Datagrid = ({ selectedLocation }) => {
     { field: '醫院電話', headerName: '醫院電話', width: 200 },
     { field: '醫事機構代碼', headerName: '醫事機構代碼', width: 200 },
     { field: '醫院地址', headerName: '醫院地址', width: 400 },
+    { field: '藥品名稱', headerName: '藥品名稱', width: 200 },
   ];
 
   useEffect(() => {
@@ -21,11 +22,12 @@ const Datagrid = ({ selectedLocation }) => {
       try {
         const response = await Axios.get("http://localhost:3001/hospitals");
         const formattedData = response.data.map(hospital => ({
-          id: hospital['醫事機構代碼'], // 使用 '醫事機構代碼' 作為唯一ID
+          id: `${hospital['醫事機構代碼']}-${hospital['醫院名稱']}-${hospital['藥品名稱']}`,
           醫院名稱: hospital['醫院名稱'],
           醫院電話: hospital['醫院電話'],
           醫事機構代碼: hospital['醫事機構代碼'],
-          醫院地址: hospital['醫院地址']
+          醫院地址: hospital['醫院地址'],
+          藥品名稱: hospital['藥品名稱']
         }));
         setRows(formattedData);
         setLoading(false);
@@ -39,9 +41,15 @@ const Datagrid = ({ selectedLocation }) => {
 
   useEffect(() => {
     const applyFilters = () => {
-      const filteredData = rows.filter(row => 
-        row['醫院地址'] && row['醫院地址'].includes(selectedLocation)
-      );
+      const { city, district, road } = selectedLocation;
+      const filteredData = rows.filter(row => {
+        const address = row['醫院地址'] || '';
+        return (
+          (!city || address.includes(city)) &&
+          (!district || address.includes(district)) &&
+          (!road || address.includes(road))
+        );
+      });
       setFilteredRows(filteredData);
     };
 
@@ -51,8 +59,7 @@ const Datagrid = ({ selectedLocation }) => {
   }, [selectedLocation, rows]);
 
   const handleSelectionChange = (selectionModel) => {
-    const selectedIDs = new Set(selectionModel);
-    const selectedData = filteredRows.filter(row => selectedIDs.has(row.id));
+    const selectedData = filteredRows.filter(row => selectionModel.includes(row.id));
     setSelectedRows(selectedData);
   };
 
@@ -77,6 +84,6 @@ const Datagrid = ({ selectedLocation }) => {
       </div>
     </div>
   );
-}
+};
 
 export default Datagrid;
