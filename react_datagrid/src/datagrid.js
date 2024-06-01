@@ -21,14 +21,14 @@ const Datagrid = ({ selectedLocation }) => {
     const getHospitals = async () => {
       try {
         const response = await Axios.get("http://localhost:3001/hospitals");
-        const formattedData = response.data.map(hospital => ({
-          id: `${hospital['醫事機構代碼']}-${hospital['醫院名稱']}-${hospital['藥品名稱']}`,
+        const formattedData = response.data.map((hospital, index) => ({
+          id: index,
           醫院名稱: hospital['醫院名稱'],
           醫院電話: hospital['醫院電話'],
           醫事機構代碼: hospital['醫事機構代碼'],
           醫院地址: hospital['醫院地址'],
           藥品名稱: hospital['藥品名稱']
-        }));
+        }));        
         setRows(formattedData);
         setLoading(false);
       } catch (error) {
@@ -39,6 +39,7 @@ const Datagrid = ({ selectedLocation }) => {
     getHospitals();
   }, []);
 
+  
   useEffect(() => {
     const applyFilters = () => {
       const { city, district, road, serum } = selectedLocation;
@@ -60,12 +61,22 @@ const Datagrid = ({ selectedLocation }) => {
     }
   }, [selectedLocation, rows]);
 
-  const handleSelectionChange = (selectionModel) => {
-    const selectedIDs = new Set(selectionModel);
+  useEffect(() => {
+    // Update selected rows whenever filteredRows changes
+    setSelectedRows([]);
+  }, [filteredRows]);
+  const handleSelectionChange = (newSelection) => {
+    const selectedIDs = new Set(newSelection);
     const selectedData = filteredRows.filter(row => selectedIDs.has(row.id));
     setSelectedRows(selectedData);
+  
+    // Log selected hospitals to console
+    console.log("Selected Hospitals:", selectedData);
   };
-
+  
+  
+  
+  
   if (loading) return <div>Loading...</div>;
 
   return (
@@ -74,13 +85,14 @@ const Datagrid = ({ selectedLocation }) => {
         <h1>附近的醫院或衛生所</h1>
       </div>
       <div style={{ height: 400, width: '80%' }}>
-        <DataGrid
-          rows={filteredRows}
-          columns={columns}
-          pageSize={5}
-          checkboxSelection
-          onSelectionModelChange={(newSelection) => handleSelectionChange(newSelection.selectionModel)}
-        />
+      <DataGrid
+      rows={filteredRows}
+      columns={columns}
+      pageSize={5}
+      checkboxSelection
+      onSelectionModelChange={(newSelection) => handleSelectionChange(newSelection)}
+      />
+
       </div>
       <div style={{ width: '80%', marginTop: 50 }}>
         <MapWithMarkerCluster selectedRows={selectedRows} />
