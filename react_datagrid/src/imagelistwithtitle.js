@@ -130,7 +130,7 @@ const ImageListWithTitle = () => {
           </Select>
         </FormControl>
       </div>
-      <ImageList sx={{ width: '100%', maxWidth: 1200, height: 450 }}>
+      <ImageList sx={{ width: '80%', maxWidth: 1200, height: 450 }}>
         {filteredData.map((item) => (
           <ImageListItem key={item.Snake_ID}>
             <Button
@@ -153,7 +153,7 @@ const ImageListWithTitle = () => {
             </Button>
             <ImageListItemBar
               title={item.種類}
-              subtitle={<span>{item.毒性}</span>}
+              subtitle={<span>{item.毒性} {item.藥品名稱}</span>}
               position="below"
             />
           </ImageListItem>
