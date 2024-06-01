@@ -293,9 +293,9 @@ function App() {
   //-----------------------------------
   const addLocation = () => {
     Axios.post("http://localhost:3001/createLocation", {
-      LocationHospital : LocationHospital,
-      LocationAntivenom : LocationAntivenom,
-      LocationHospitalNumber : LocationHospitalNumber
+      hname: LocationHospital,
+      aname: LocationAntivenom,
+      hnumber: LocationHospitalNumber,
     }).then(() => {
       setLocationHospital("");
       setLocationAntivenom("");
@@ -496,7 +496,7 @@ function App() {
             LocationAntivenom={LocationAntivenom}
             setLocationAntivenom={setLocationAntivenom}
             LocationHospitalNumber={LocationHospitalNumber}
-            setLocationHospitalNumber={setLocationAntivenom}
+            setLocationHospitalNumber={setLocationHospitalNumber}
             addLocation={addLocation}
           />
           <LocationTable

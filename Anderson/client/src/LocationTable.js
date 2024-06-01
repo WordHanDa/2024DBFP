@@ -1,12 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import Pagination from "./Pagination";
 
 function LocationTable({
   LocationList,
-  updateLocationField,
-  setUpdateLocationField,
-  updateLocationValue,
-  setUpdateLocationValue,
   updateLocation,
   deleteLocation,
   searchLocation,
@@ -15,13 +11,24 @@ function LocationTable({
   itemsPerPage,
   handlePageChange,
 }) {
-  const filteredColorList = LocationList.filter((val) =>
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [updateField, setUpdateField] = useState("");
+  const [updateValue, setUpdateValue] = useState("");
+
+  const filteredLocationList = LocationList.filter((val) =>
     val['醫院名稱'] ? val['醫院名稱'].toLowerCase().includes(searchLocation.toLowerCase()) : false
   );
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentLocations = filteredColorList.slice(indexOfFirstItem, indexOfLastItem);
+  const currentLocations = filteredLocationList.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handleUpdateClick = (rowKey, field, value) => {
+    updateLocation(rowKey, field, value);
+    setSelectedRow(null);
+    setUpdateField("");
+    setUpdateValue("");
+  };
 
   return (
     <div className="Locations">
@@ -51,16 +58,19 @@ function LocationTable({
               <td className="actions">
                 <select
                   defaultValue=""
-                  onChange={(event) => setUpdateLocationField(event.target.value)}
+                  onChange={(event) => {
+                    setSelectedRow(key);
+                    setUpdateField(event.target.value);
+                  }}
                 >
                   <option value="" disabled hidden>類別</option>
                   <option value="醫院名稱">醫院名稱</option>
                   <option value="藥品名稱">藥品名稱</option>
                   <option value="醫事機構代碼">醫事機構代碼</option>
                 </select>
-                {updateLocationField === "藥品名稱" ? (
+                {selectedRow === key && updateField === "藥品名稱" ? (
                   <select
-                    onChange={(event) => setUpdateLocationValue(event.target.value)}
+                    onChange={(event) => setUpdateValue(event.target.value)}
                   >
                     <option value="" disabled hidden>選擇藥品名稱</option>
                     <option value="抗百步蛇毒血清">抗百步蛇毒血清</option>
@@ -69,16 +79,18 @@ function LocationTable({
                     <option value="抗龜殼花及赤尾鮐蛇毒血清">抗龜殼花及赤尾鮐蛇毒血清</option>
                   </select>
                 ) : (
-                  <input
-                    type="text"
-                    placeholder="Value"
-                    onChange={(event) => setUpdateLocationValue(event.target.value)}
-                  />
+                  selectedRow === key && (
+                    <input
+                      type="text"
+                      placeholder="Value"
+                      onChange={(event) => setUpdateValue(event.target.value)}
+                    />
+                  )
                 )}
                 <div className="actions-row">
                   <button
                     className="update-button"
-                    onClick={() => updateLocation(val['醫院名稱'], val['藥品名稱'], val['醫事機構代碼'], updateLocationField, updateLocationValue)}
+                    onClick={() => handleUpdateClick(val['醫院名稱'], updateField, updateValue)}
                   >
                     更新
                   </button>
@@ -96,7 +108,7 @@ function LocationTable({
       </table>
       <Pagination
         currentPage={currentPage}
-        totalItems={filteredColorList.length}
+        totalItems={filteredLocationList.length}
         itemsPerPage={itemsPerPage}
         handlePageChange={handlePageChange}
       />

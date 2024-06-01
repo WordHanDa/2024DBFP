@@ -8,6 +8,7 @@ function HeadShapeForm({ headShapeName, setHeadShapeName, addHeadShape }) {
       <label>蛇的頭部形狀:</label>
       <input
         type="text"
+        placeholder="請輸入頭部形狀"
         value={headShapeName}
         onChange={(event) => setHeadShapeName(event.target.value)}
       />
