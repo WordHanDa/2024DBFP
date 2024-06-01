@@ -18,12 +18,12 @@ const SelectLocation = ({ handleLocationChange }) => {
   const [loadingRoads, setLoadingRoads] = useState(false);
 
   useEffect(() => {
-    Axios.get("http://192.168.137.196:3001/cities")
+    Axios.get("http://localhost:3001/cities")
       .then(response => setCities(response.data))
       .catch(error => console.error('Error fetching city data:', error))
       .finally(() => setLoadingCities(false));
 
-    Axios.get("http://192.168.137.196:3001/snakeSerum")
+    Axios.get("http://localhost:3001/snakeSerum")
       .then(response => setSerums(response.data))
       .catch(error => console.error('Error fetching snakeSerum data:', error));
   }, []);
@@ -31,7 +31,7 @@ const SelectLocation = ({ handleLocationChange }) => {
   useEffect(() => {
     if (location.city) {
       setLoadingDistricts(true);
-      Axios.get(`http://192.168.137.196:3001/sites?city=${location.city}`)
+      Axios.get(`http://localhost:3001/sites?city=${location.city}`)
         .then(response => setDistricts(response.data))
         .catch(error => console.error('Error fetching district data:', error))
         .finally(() => setLoadingDistricts(false));
@@ -44,7 +44,7 @@ const SelectLocation = ({ handleLocationChange }) => {
   useEffect(() => {
     if (location.district) {
       setLoadingRoads(true);
-      Axios.get(`http://192.168.137.196:3001/roads?site=${location.district}`)
+      Axios.get(`http://localhost:3001/roads?site=${location.district}`)
         .then(response => setRoads(response.data))
         .catch(error => console.error('Error fetching road data:', error))
         .finally(() => setLoadingRoads(false));
