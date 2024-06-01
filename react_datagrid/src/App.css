@@ -8,3 +8,9 @@
   text-align: center;
   padding: 10px;
 }
+
+.MuiMenuItem-root {
+  display: block;
+  width: 100%;
+  text-align: left;
+}

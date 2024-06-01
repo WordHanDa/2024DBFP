@@ -7,10 +7,11 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
 const SelectLocation = ({ handleLocationChange }) => {
-  const [location, setLocation] = useState({ city: '', district: '', road: '' });
+  const [location, setLocation] = useState({ city: '', district: '', road: '', serum: '' });
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [roads, setRoads] = useState([]);
+  const [serums, setSerums] = useState([]);
 
   useEffect(() => {
     Axios.get("http://localhost:3001/cities")
@@ -19,6 +20,15 @@ const SelectLocation = ({ handleLocationChange }) => {
       })
       .catch((error) => {
         console.error('Error fetching city data:', error);
+      });
+
+    Axios.get("http://localhost:3001/snakeSerum")
+      .then((response) => {
+        console.log('Serum data:', response.data); // Debugging line
+        setSerums(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching snakeSerum data:', error);
       });
   }, []);
 
@@ -51,15 +61,20 @@ const SelectLocation = ({ handleLocationChange }) => {
     }
   }, [location.district]);
 
+
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setLocation((prevState) => ({
-      ...prevState,
-      [name]: value,
-      ...(name === 'city' && { district: '', road: '' }),
-      ...(name === 'district' && { road: '' }),
-    }));
-    handleLocationChange({ ...location, [name]: value });
+    setLocation((prevState) => {
+      const newLocation = { ...prevState, [name]: value };
+      if (name === 'city') {
+        newLocation.district = '';
+        newLocation.road = '';
+      } else if (name === 'district') {
+        newLocation.road = '';
+      }
+      handleLocationChange(newLocation);
+      return newLocation;
+    });
   };
 
   return (
@@ -111,6 +126,21 @@ const SelectLocation = ({ handleLocationChange }) => {
           <MenuItem value=""><em>None</em></MenuItem>
           {roads.map((road) => (
             <MenuItem key={road.road_id} value={road.road}>{road.road}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <FormControl variant="outlined" sx={{ minWidth: 120 }}>
+        <InputLabel id="serum-select-label">藥品名稱</InputLabel>
+        <Select
+          labelId="serum-select-label"
+          name="serum"
+          value={location.serum}
+          onChange={handleChange}
+          label="藥品名稱"
+        >
+          <MenuItem value=""><em>None</em></MenuItem>
+          {serums.map((serum) => (
+            <MenuItem key={serum.serum_id} value={serum.藥品名稱}>{serum.藥品名稱}</MenuItem>
           ))}
         </Select>
       </FormControl>

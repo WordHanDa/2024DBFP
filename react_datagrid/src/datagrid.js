@@ -41,13 +41,15 @@ const Datagrid = ({ selectedLocation }) => {
 
   useEffect(() => {
     const applyFilters = () => {
-      const { city, district, road } = selectedLocation;
+      const { city, district, road, serum } = selectedLocation;
       const filteredData = rows.filter(row => {
         const address = row['醫院地址'] || '';
+        const hasSerum = !serum || row['藥品名稱'] === serum;
         return (
           (!city || address.includes(city)) &&
           (!district || address.includes(district)) &&
-          (!road || address.includes(road))
+          (!road || address.includes(road)) &&
+          hasSerum
         );
       });
       setFilteredRows(filteredData);
@@ -59,7 +61,8 @@ const Datagrid = ({ selectedLocation }) => {
   }, [selectedLocation, rows]);
 
   const handleSelectionChange = (selectionModel) => {
-    const selectedData = filteredRows.filter(row => selectionModel.includes(row.id));
+    const selectedIDs = new Set(selectionModel);
+    const selectedData = filteredRows.filter(row => selectedIDs.has(row.id));
     setSelectedRows(selectedData);
   };
 
@@ -76,7 +79,7 @@ const Datagrid = ({ selectedLocation }) => {
           columns={columns}
           pageSize={5}
           checkboxSelection
-          onSelectionModelChange={handleSelectionChange}
+          onSelectionModelChange={(newSelection) => handleSelectionChange(newSelection.selectionModel)}
         />
       </div>
       <div style={{ width: '80%', marginTop: 50 }}>
