@@ -7,6 +7,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import CircularProgress from '@mui/material/CircularProgress';
 
+const SERVER_ADDRESS = 'http://172.27.6.192:3001';
+
 const SelectLocation = ({ handleLocationChange }) => {
   const [location, setLocation] = useState({ city: '', district: '', road: '', serum: '' });
   const [cities, setCities] = useState([]);
@@ -18,20 +20,20 @@ const SelectLocation = ({ handleLocationChange }) => {
   const [loadingRoads, setLoadingRoads] = useState(false);
 
   useEffect(() => {
-    Axios.get("http://localhost:3001/cities")
+    Axios.get(`${SERVER_ADDRESS}/cities`)
       .then(response => setCities(response.data))
       .catch(error => console.error('Error fetching city data:', error))
       .finally(() => setLoadingCities(false));
-
-    Axios.get("http://localhost:3001/snakeSerum")
+  
+    Axios.get(`${SERVER_ADDRESS}/snakeSerum`)
       .then(response => setSerums(response.data))
       .catch(error => console.error('Error fetching snakeSerum data:', error));
   }, []);
-
+  
   useEffect(() => {
     if (location.city) {
       setLoadingDistricts(true);
-      Axios.get(`http://localhost:3001/sites?city=${location.city}`)
+      Axios.get(`${SERVER_ADDRESS}/sites?city=${location.city}`)
         .then(response => setDistricts(response.data))
         .catch(error => console.error('Error fetching district data:', error))
         .finally(() => setLoadingDistricts(false));
@@ -40,11 +42,11 @@ const SelectLocation = ({ handleLocationChange }) => {
       setRoads([]);
     }
   }, [location.city]);
-
+  
   useEffect(() => {
     if (location.district) {
       setLoadingRoads(true);
-      Axios.get(`http://localhost:3001/roads?site=${location.district}`)
+      Axios.get(`${SERVER_ADDRESS}/roads?site=${location.district}`)
         .then(response => setRoads(response.data))
         .catch(error => console.error('Error fetching road data:', error))
         .finally(() => setLoadingRoads(false));

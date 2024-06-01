@@ -8,6 +8,9 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import Avatar from '@mui/material/Avatar';
+
+const SERVER_ADDRESS = "http://172.27.6.192:3001";
 
 const imageListContainerStyle = {
   display: 'flex',
@@ -51,31 +54,37 @@ const ImageListWithTitle = () => {
 
   useEffect(() => {
     // Fetch snake data from backend
-    Axios.get("http://localhost:3001/snakes")
+    Axios.get(`${SERVER_ADDRESS}/snakes`)
       .then((response) => {
         setSnakeList(response.data);
       })
       .catch((error) => {
         console.error('Error fetching snake data:', error);
       });
+  
     // Fetch color options from backend when component mounts
-    Axios.get("http://localhost:3001/snakeColors")
+    Axios.get(`${SERVER_ADDRESS}/snakeColors`)
       .then((response) => {
         setColorOptions(response.data.map(color => color['蛇的顏色']));
       })
       .catch((error) => {
         console.error('Error fetching color options:', error);
       });
+  
     // Fetch pattern options from backend when component mounts
-    Axios.get("http://localhost:3001/snakePatterns")
+    Axios.get(`${SERVER_ADDRESS}/snakePatterns`)
       .then((response) => {
-        setPatternOptions(response.data.map(pattern => pattern['蛇的斑紋']));
+        setPatternOptions(response.data.map(pattern => ({
+          pattern: pattern['蛇的斑紋'],
+          patternImageURL: pattern['patternImageURL']
+        })));
       })
       .catch((error) => {
         console.error('Error fetching pattern options:', error);
       });
+  
     // Fetch head shape options from backend when component mounts
-    Axios.get("http://localhost:3001/head")
+    Axios.get(`${SERVER_ADDRESS}/head`)
       .then((response) => {
         setHeadShapeOptions(response.data.map(headShape => headShape['頭部形狀']));
       })
@@ -110,8 +119,11 @@ const ImageListWithTitle = () => {
             label="斑紋"
           >
             <MenuItem value=""><em>全部</em></MenuItem>
-            {patternOptions.map((pattern, index) => (
-              <MenuItem key={index} value={pattern}>{pattern}</MenuItem>
+            {patternOptions.map((patternObj, index) => (
+              <MenuItem key={index} value={patternObj.pattern}>
+                <Avatar src={patternObj.patternImageURL} sx={{ marginRight: 1, width: 80, height: 90 }} />
+                {patternObj.pattern}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>

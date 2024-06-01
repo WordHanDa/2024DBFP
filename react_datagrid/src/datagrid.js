@@ -3,6 +3,8 @@ import { DataGrid } from '@material-ui/data-grid';
 import MapWithMarkerCluster from './map';
 import Axios from 'axios';
 
+const SERVER_ADDRESS = "http://172.27.6.192:3001";
+
 const Datagrid = ({ selectedLocation }) => {
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState([]);
@@ -20,7 +22,7 @@ const Datagrid = ({ selectedLocation }) => {
   useEffect(() => {
     const getHospitals = async () => {
       try {
-        const response = await Axios.get("http://localhost:3001/hospitals");
+        const response = await Axios.get(`${SERVER_ADDRESS}/hospital`);
         const formattedData = response.data.map((hospital, index) => ({
           id: index,
           醫院名稱: hospital['醫院名稱'],
@@ -28,7 +30,7 @@ const Datagrid = ({ selectedLocation }) => {
           醫事機構代碼: hospital['醫事機構代碼'],
           醫院地址: hospital['醫院地址'],
           藥品名稱: hospital['藥品名稱']
-        }));        
+        }));
         setRows(formattedData);
         setLoading(false);
       } catch (error) {
@@ -38,6 +40,7 @@ const Datagrid = ({ selectedLocation }) => {
     };
     getHospitals();
   }, []);
+  
 
   
   useEffect(() => {
