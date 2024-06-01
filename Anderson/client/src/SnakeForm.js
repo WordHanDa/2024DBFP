@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 
+const SERVER_ADDRESS = "http://172.27.6.192:3001";
+
 function SnakeForm({ snakeID, snakeName, poison, color, shape, pattern, headShape, antivenomId, url, setSnakeID, setSnakeName, setPoison, setColor, setShape, setPattern, setHeadShape, setAntivenomId, seturl, addSnake }) {
   const [poisonOptions, setPoisonOptions] = useState([]);
   const [colorOptions, setColorOptions] = useState([]);
@@ -9,7 +11,7 @@ function SnakeForm({ snakeID, snakeName, poison, color, shape, pattern, headShap
 
   useEffect(() => {
     // Fetch options from backend when component mounts
-    Axios.get("http://localhost:3001/poisonLevels")
+    Axios.get(`${SERVER_ADDRESS}/poisonLevels`)
       .then((response) => {
         setPoisonOptions(response.data.map(poison => poison['蛇的毒性']));
       })
@@ -17,7 +19,7 @@ function SnakeForm({ snakeID, snakeName, poison, color, shape, pattern, headShap
         console.error('Error fetching poison types:', error);
       });
 
-    Axios.get("http://localhost:3001/snakeColors")
+    Axios.get(`${SERVER_ADDRESS}/snakeColors`)
       .then((response) => {
         setColorOptions(response.data.map(color => color['蛇的顏色']));
       })
@@ -25,7 +27,7 @@ function SnakeForm({ snakeID, snakeName, poison, color, shape, pattern, headShap
         console.error('Error fetching snake colors:', error);
       });
 
-    Axios.get("http://localhost:3001/snakePatterns") 
+    Axios.get(`${SERVER_ADDRESS}/snakePatterns`)
       .then((response) => {
         setPatternOptions(response.data.map(pattern => pattern['蛇的斑紋']));
       })
@@ -33,7 +35,7 @@ function SnakeForm({ snakeID, snakeName, poison, color, shape, pattern, headShap
         console.error('Error fetching snake patterns:', error);
       });
 
-    Axios.get("http://localhost:3001/head") 
+    Axios.get(`${SERVER_ADDRESS}/head`)
       .then((response) => {
         setHeadShapeOptions(response.data.map(headShape => headShape['頭部形狀']));
       })
@@ -89,9 +91,9 @@ function SnakeForm({ snakeID, snakeName, poison, color, shape, pattern, headShap
         ))}
       </select>
       
-      <label>藥品名稱:</label>
+      <label>藥品名稱（預設爲空）:</label>
       <select value={antivenomId} onChange={(event) => setAntivenomId(event.target.value)}>
-        <option value="">請選擇藥品名稱</option>
+        <option value={null}></option> 
         <option value="抗百步蛇毒血清">抗百步蛇毒血清</option>
         <option value="抗雨傘節及飯匙倩蛇毒血清">抗雨傘節及飯匙倩蛇毒血清</option>
         <option value="抗龜殼花及赤尾鮐蛇毒血清">抗龜殼花及赤尾鮐蛇毒血清</option>

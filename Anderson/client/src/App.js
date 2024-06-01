@@ -15,6 +15,8 @@ import HeadShapeTable from "./HeadShapeTable";
 import LocationForm from "./LocationForm"; 
 import LocationTable from "./LocationTable"; 
 
+const SERVER_ADDRESS = "http://172.27.6.192:3001";
+
 function App() {
   const [selectedTable, setSelectedTable] = useState("snake");
 
@@ -26,7 +28,7 @@ function App() {
   const [shape, setShape] = useState("");
   const [pattern, setPattern] = useState("");
   const [headShape, setHeadShape] = useState("");
-  const [antivenomId, setAntivenomId] = useState("");
+  const [antivenomId, setAntivenomId] = useState(null);
   const [url, seturl] = useState("");
   const [snakeList, setSnakeList] = useState([]);
   const [updateField, setUpdateField] = useState("poison");
@@ -51,6 +53,7 @@ function App() {
 
   // Pattern state variables
   const [patternName, setPatternName] = useState("");
+  const [patternURL, setPatternURL] = useState("");
   const [patternList, setPatternList] = useState([]);
   const [updatePatternValue, setUpdatePatternValue] = useState("");
   const [searchPattern, setSearchPattern] = useState("");
@@ -75,7 +78,7 @@ function App() {
   const itemsPerPage = 10;
 
   const addSnake = () => {
-    Axios.post("http://localhost:3001/createSnake", {
+    Axios.post(`${SERVER_ADDRESS}/createSnake`, {
       snakeID: snakeID, 
       name: snakeName,
       poison: poison,
@@ -98,15 +101,15 @@ function App() {
       getSnakes();
     });
   };
-
+  
   const getSnakes = () => {
-    Axios.get("http://localhost:3001/snakes").then((response) => {
+    Axios.get(`${SERVER_ADDRESS}/snakes`).then((response) => {
       setSnakeList(response.data);
     });
   };
-
+  
   const updateSnake = (id, field, value) => {
-    Axios.put("http://localhost:3001/updateSnake", {
+    Axios.put(`${SERVER_ADDRESS}/updateSnake`, {
       id: id,
       field: field,
       value: value,
@@ -118,10 +121,10 @@ function App() {
       );
     });
   };
-
+  
   const deleteSnake = (id) => {
     if (window.confirm(`Are you sure you want to delete the snake with ID ${id}?`)) {
-      Axios.delete(`http://localhost:3001/deleteSnake/${id}`).then((response) => {
+      Axios.delete(`${SERVER_ADDRESS}/deleteSnake/${id}`).then((response) => {
         setSnakeList(
           snakeList.filter((val) => {
             return val.Snake_ID !== id;
@@ -132,7 +135,7 @@ function App() {
   };
   //--------------------------------
   const addHospital = () => {
-    Axios.post("http://localhost:3001/createHospital", {
+    Axios.post(`${SERVER_ADDRESS}/createHospital`, {
       code: hospitalCode,
       name: hospitalName,
       address: hospitalAddress,
@@ -145,15 +148,15 @@ function App() {
       getHospitals();
     });
   };
-
+  
   const getHospitals = () => {
-    Axios.get("http://localhost:3001/hospitals").then((response) => {
+    Axios.get(`${SERVER_ADDRESS}/hospitals`).then((response) => {
       setHospitalList(response.data);
     });
   };
-
+  
   const updateHospital = (code, field, value) => {
-    Axios.put("http://localhost:3001/updateHospital", {
+    Axios.put(`${SERVER_ADDRESS}/updateHospital`, {
       code: code,
       field: field,
       value: value,
@@ -165,10 +168,10 @@ function App() {
       );
     });
   };
-
+  
   const deleteHospital = (code) => {
     if (window.confirm(`Are you sure you want to delete the hospital with code ${code}?`)) {
-      Axios.delete(`http://localhost:3001/deleteHospital/${code}`).then((response) => {
+      Axios.delete(`${SERVER_ADDRESS}/deleteHospital/${code}`).then((response) => {
         setHospitalList(
           hospitalList.filter((val) => {
             return val['醫事機構代碼'] !== code;
@@ -179,22 +182,22 @@ function App() {
   };
   //-------------------------------------------
   const addColor = () => {
-    Axios.post("http://localhost:3001/createColor", {
+    Axios.post(`${SERVER_ADDRESS}/createColor`, {
       name: colorName,
     }).then(() => {
       setColorName("");
       getColors();
     });
   };
-
+  
   const getColors = () => {
-    Axios.get("http://localhost:3001/colors").then((response) => {
+    Axios.get(`${SERVER_ADDRESS}/colors`).then((response) => {
       setColorList(response.data);
     });
   };
-
+  
   const updateColor = (name, value) => {
-    Axios.put("http://localhost:3001/updateColor", {
+    Axios.put(`${SERVER_ADDRESS}/updateColor`, {
       name: name,
       value: value,
     }).then((response) => {
@@ -205,10 +208,10 @@ function App() {
       );
     });
   };
-
+  
   const deleteColor = (name) => {
     if (window.confirm(`Are you sure you want to delete the color ${name}?`)) {
-      Axios.delete(`http://localhost:3001/deleteColor/${name}`).then((response) => {
+      Axios.delete(`${SERVER_ADDRESS}/deleteColor/${name}`).then((response) => {
         setColorList(
           colorList.filter((val) => {
             return val['蛇的顏色'] !== name;
@@ -220,22 +223,24 @@ function App() {
 
   //--------------------------------
   const addPattern = () => {
-    Axios.post("http://localhost:3001/createPattern", {
+    Axios.post(`${SERVER_ADDRESS}/createPattern`, {
       name: patternName,
+      URL: patternURL,
     }).then(() => {
       setPatternName("");
+      setPatternURL("");
       getPatterns();
     });
   };
-
+  
   const getPatterns = () => {
-    Axios.get("http://localhost:3001/patterns").then((response) => {
+    Axios.get(`${SERVER_ADDRESS}/patterns`).then((response) => {
       setPatternList(response.data);
     });
   };
-
+  
   const updatePattern = (name, value) => {
-    Axios.put("http://localhost:3001/updatePattern", {
+    Axios.put(`${SERVER_ADDRESS}/updatePattern`, {
       name,
       value,
     }).then((response) => {
@@ -244,10 +249,10 @@ function App() {
       );
     });
   };
-
+  
   const deletePattern = (name) => {
     if (window.confirm(`Are you sure you want to delete the pattern ${name}?`)) {
-      Axios.delete(`http://localhost:3001/deletePattern/${name}`).then((response) => {
+      Axios.delete(`${SERVER_ADDRESS}/deletePattern/${name}`).then((response) => {
         setPatternList(
           patternList.filter((val) => val['蛇的斑紋'] !== name)
         );
@@ -257,22 +262,22 @@ function App() {
 
   //-----------------------------------
   const addHeadShape = () => {
-    Axios.post("http://localhost:3001/createHeadShape", {
+    Axios.post(`${SERVER_ADDRESS}/createHeadShape`, {
       headShapeName,
     }).then(() => {
       setHeadShapeName("");
       getHeadShapes();
     });
   };
-
+  
   const getHeadShapes = () => {
-    Axios.get("http://localhost:3001/headShapes").then((response) => {
+    Axios.get(`${SERVER_ADDRESS}/headShapes`).then((response) => {
       setHeadShapeList(response.data);
     });
   };
-
+  
   const updateHeadShape = (headShape, value) => {
-    Axios.put("http://localhost:3001/updateHeadShape", {
+    Axios.put(`${SERVER_ADDRESS}/updateHeadShape`, {
       headShape,
       value,
     }).then(() => {
@@ -281,10 +286,10 @@ function App() {
       );
     });
   };
-
+  
   const deleteHeadShape = (headShape) => {
     if (window.confirm(`Are you sure you want to delete the head shape ${headShape}?`)) {
-      Axios.delete(`http://localhost:3001/deleteHeadShape/${headShape}`).then(() => {
+      Axios.delete(`${SERVER_ADDRESS}/deleteHeadShape/${headShape}`).then(() => {
         setHeadShapeList(headShapeList.filter((val) => val['頭部形狀'] !== headShape));
       });
     }
@@ -292,7 +297,7 @@ function App() {
 
   //-----------------------------------
   const addLocation = () => {
-    Axios.post("http://localhost:3001/createLocation", {
+    Axios.post(`${SERVER_ADDRESS}/createLocation`, {
       hname: LocationHospital,
       aname: LocationAntivenom,
       hnumber: LocationHospitalNumber,
@@ -303,15 +308,15 @@ function App() {
       getLocations();
     });
   };
-
+  
   const getLocations = () => {
-    Axios.get("http://localhost:3001/Location").then((response) => {
+    Axios.get(`${SERVER_ADDRESS}/Location`).then((response) => {
       setLocationList(response.data);
     });
   };
-
+  
   const updateLocation = (hospital, medicine, medicalCode, field, value) => {
-    Axios.put("http://localhost:3001/updateLocation", {
+    Axios.put(`${SERVER_ADDRESS}/updateLocation`, {
       hospital,
       medicine,
       medicalCode,
@@ -320,7 +325,11 @@ function App() {
     }).then(() => {
       setLocationList(
         LocationList.map((val) => {
-          if (val['醫院名稱'] === hospital && val['藥品名稱'] === medicine && val['醫事機構代碼'] === medicalCode) {
+          if (
+            val['醫院名稱'] === hospital &&
+            val['藥品名稱'] === medicine &&
+            val['醫事機構代碼'] === medicalCode
+          ) {
             return { ...val, [field]: value };
           }
           return val;
@@ -328,11 +337,24 @@ function App() {
       );
     });
   };
-
+  
   const deleteLocation = (hospital, medicine, medicalCode) => {
-    if (window.confirm(`Are you sure you want to delete the location ${hospital}, ${medicine}, ${medicalCode}?`)) {
-      Axios.delete(`http://localhost:3001/deleteLocation/${hospital}/${medicine}/${medicalCode}`).then(() => {
-        setLocationList(LocationList.filter((val) => val['醫院名稱'] !== hospital || val['藥品名稱'] !== medicine || val['醫事機構代碼'] !== medicalCode));
+    if (
+      window.confirm(
+        `Are you sure you want to delete the location ${hospital}, ${medicine}, ${medicalCode}?`
+      )
+    ) {
+      Axios.delete(
+        `${SERVER_ADDRESS}/deleteLocation/${hospital}/${medicine}/${medicalCode}`
+      ).then(() => {
+        setLocationList(
+          LocationList.filter(
+            (val) =>
+              val['醫院名稱'] !== hospital ||
+              val['藥品名稱'] !== medicine ||
+              val['醫事機構代碼'] !== medicalCode
+          )
+        );
       });
     }
   };
@@ -453,6 +475,8 @@ function App() {
               <PatternForm
                 patternName={patternName}
                 setPatternName={setPatternName}
+                patternURL={patternURL}
+                setPatternURL={setPatternURL}
                 addPattern={addPattern}
               />
               <PatternTable

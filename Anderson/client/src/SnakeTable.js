@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import Pagination from "./Pagination";
 
+const SERVER_ADDRESS = "http://172.27.6.192:3001";
+
 function SnakeTable({
   snakeList,
   updateSnake,
@@ -21,7 +23,7 @@ function SnakeTable({
   const [updateValue, setUpdateValue] = useState("");
 
   useEffect(() => {
-    Axios.get("http://localhost:3001/poisonLevels")
+    Axios.get(`${SERVER_ADDRESS}/poisonLevels`)
       .then((response) => {
         setPoisonOptions(response.data.map((poison) => poison["蛇的毒性"]));
       })
@@ -29,7 +31,7 @@ function SnakeTable({
         console.error("Error fetching poison types:", error);
       });
 
-    Axios.get("http://localhost:3001/snakeColors")
+    Axios.get(`${SERVER_ADDRESS}/snakeColors`)
       .then((response) => {
         setColorOptions(response.data.map((color) => color["蛇的顏色"]));
       })
@@ -37,7 +39,7 @@ function SnakeTable({
         console.error("Error fetching color options:", error);
       });
 
-    Axios.get("http://localhost:3001/snakePatterns")
+    Axios.get(`${SERVER_ADDRESS}/snakePatterns`)
       .then((response) => {
         setPatternOptions(response.data.map((pattern) => pattern["蛇的斑紋"]));
       })
@@ -45,7 +47,7 @@ function SnakeTable({
         console.error("Error fetching pattern options:", error);
       });
 
-    Axios.get("http://localhost:3001/head")
+    Axios.get(`${SERVER_ADDRESS}/head`)
       .then((response) => {
         setHeadShapeOptions(response.data.map((headShape) => headShape["頭部形狀"]));
       })
@@ -68,6 +70,10 @@ function SnakeTable({
   const currentSnakes = filteredSnakeList.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleUpdateClick = (snakeId, field, value) => {
+    // 如果值是空字符串，將其設置為 null
+    if (value === "") {
+      value = null;
+    }
     updateSnake(snakeId, field, value);
     setSelectedRow(null);
     setUpdateField("");
@@ -79,6 +85,9 @@ function SnakeTable({
       case "毒性":
         return (
           <select value={updateValue} onChange={(event) => setUpdateValue(event.target.value)}>
+            <option value="" disabled hidden>
+              請選擇
+            </option>
             {poisonOptions.map((option, index) => (
               <option key={index} value={option}>
                 {option}
@@ -89,6 +98,9 @@ function SnakeTable({
       case "出沒時間":
         return (
           <select value={updateValue} onChange={(event) => setUpdateValue(event.target.value)}>
+            <option value="" disabled hidden>
+              請選擇
+            </option>
             <option value="日行性">日行性</option>
             <option value="夜行性">夜行性</option>
           </select>
@@ -96,6 +108,9 @@ function SnakeTable({
       case "顏色":
         return (
           <select value={updateValue} onChange={(event) => setUpdateValue(event.target.value)}>
+            <option value="" disabled hidden>
+              請選擇
+            </option>
             {colorOptions.map((option, index) => (
               <option key={index} value={option}>
                 {option}
@@ -106,6 +121,9 @@ function SnakeTable({
       case "斑紋":
         return (
           <select value={updateValue} onChange={(event) => setUpdateValue(event.target.value)}>
+            <option value="" disabled hidden>
+              請選擇
+            </option>
             {patternOptions.map((option, index) => (
               <option key={index} value={option}>
                 {option}
@@ -116,6 +134,9 @@ function SnakeTable({
       case "頭部形狀":
         return (
           <select value={updateValue} onChange={(event) => setUpdateValue(event.target.value)}>
+            <option value="" disabled hidden>
+              請選擇
+            </option>
             {headShapeOptions.map((option, index) => (
               <option key={index} value={option}>
                 {option}
@@ -123,10 +144,13 @@ function SnakeTable({
             ))}
           </select>
         );
-      case "Antivenom_ID":
+      case "藥品名稱":
         return (
           <select value={updateValue} onChange={(event) => setUpdateValue(event.target.value)}>
-            <option value="">無</option>
+            <option value="" disabled hidden>
+              請選擇
+            </option>
+            <option value={null}></option> 
             <option value="抗百步蛇毒血清">抗百步蛇毒血清</option>
             <option value="抗雨傘節及飯匙倩蛇毒血清">抗雨傘節及飯匙倩蛇毒血清</option>
             <option value="抗龜殼花及赤尾鮐蛇毒血清">抗龜殼花及赤尾鮐蛇毒血清</option>
@@ -198,7 +222,7 @@ function SnakeTable({
                   <option value="顏色">顏色</option>
                   <option value="斑紋">斑紋</option>
                   <option value="頭部形狀">頭部形狀</option>
-                  <option value="Antivenom_ID">藥品名稱</option>
+                  <option value="藥品名稱">藥品名稱</option>
                 </select>
                 {selectedRow === key && renderInputField()}
                 <div className="actions-row">

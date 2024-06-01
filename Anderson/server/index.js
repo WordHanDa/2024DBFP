@@ -219,10 +219,10 @@ app.delete("/deleteColor/:name", (req, res) => {
 
 //------------
 app.post("/createPattern", (req, res) => {
-  const { name } = req.body;
+  const { name, URL } = req.body;
   db.query(
-    "INSERT INTO `蛇的斑紋` (蛇的斑紋) VALUES (?)",
-    [name],
+    "INSERT INTO `蛇的斑紋` (蛇的斑紋, patternImageURL) VALUES (?,?)",
+    [name, URL],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -397,6 +397,72 @@ app.delete("/deleteLocation/:hospital/:medicine/:medicalCode", (req, res) => {
   const medicine = req.params.medicine;
   const medicalCode = req.params.medicalCode;
   db.query("DELETE FROM 存放位置 WHERE 醫院名稱 = ? AND 藥品名稱 = ? AND 醫事機構代碼 = ?", [hospital, medicine, medicalCode], (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+//-----------------------------
+// Add this to your existing server code
+app.get("/cities", (req, res) => {
+  db.query("SELECT city_id, city FROM city", (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.get("/sites", (req, res) => {
+  const city = req.query.city;
+  db.query(
+    "SELECT site_id, site FROM site JOIN city ON site.city_id = city.city_id WHERE city.city = ?",
+    [city],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+app.get("/roads", (req, res) => {
+  const site = req.query.site;
+  db.query(
+    "SELECT road_id, road FROM road JOIN site ON road.site_id = site.site_id WHERE site.site = ?",
+    [site],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+app.get("/snakeSerum", (req, res) => {
+  db.query("SELECT * FROM `蛇的血清`", (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.get("/hospital", (req, res) => {
+  db.query("SELECT hospital.醫事機構代碼, hospital.醫院名稱, 醫院電話, 醫院地址, 藥品名稱 FROM hospital left join 存放位置 on hospital.醫事機構代碼 = 存放位置.醫事機構代碼 and hospital.醫院名稱 = 存放位置.醫院名稱;", (err, result) => {
     if (err) {
       console.log(err);
     } else {
