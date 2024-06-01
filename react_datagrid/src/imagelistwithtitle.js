@@ -153,7 +153,7 @@ const ImageListWithTitle = () => {
             </Button>
             <ImageListItemBar
               title={item.種類}
-              subtitle={<span>「{item.毒性}」 「{item.藥品名稱 ? `「${item.藥品名稱}」` : '無'}」</span>}
+              subtitle={<span>「{item.毒性}」 「{item.藥品名稱 ? `${item.藥品名稱}` : '無'}」</span>}
               position="below"
             />
           </ImageListItem>
