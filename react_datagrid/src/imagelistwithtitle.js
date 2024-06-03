@@ -56,6 +56,7 @@ const ImageListWithTitle = () => {
     // Fetch snake data from backend
     Axios.get(`${SERVER_ADDRESS}/snakes`)
       .then((response) => {
+        console.log("Received snake data:", response.data);
         setSnakeList(response.data);
       })
       .catch((error) => {
