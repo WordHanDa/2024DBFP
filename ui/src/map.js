@@ -40,7 +40,6 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
               street = component.long_name;
             }
           });
-
           console.log(`User location: ${city}, ${street}`);
         } else {
           console.log('No results found');
