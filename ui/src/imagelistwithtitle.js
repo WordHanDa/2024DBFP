@@ -1,4 +1,3 @@
-// ImageListWithTitle.js
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import ImageList from '@mui/material/ImageList';
@@ -26,6 +25,7 @@ const ImageListWithTitle = ({ onImageClick }) => {
   const [patternFilter, setPatternFilter] = useState('');
   const [headShapeFilter, setHeadShapeFilter] = useState('');
   const [snakeList, setSnakeList] = useState([]);
+  const [showImages, setShowImages] = useState(false);
 
   const [colorOptions, setColorOptions] = useState([]);
   const [patternOptions, setPatternOptions] = useState([]);
@@ -33,14 +33,17 @@ const ImageListWithTitle = ({ onImageClick }) => {
 
   const handleColorChange = (event) => {
     setColorFilter(event.target.value);
+    setShowImages(true);
   };
 
   const handlePatternChange = (event) => {
     setPatternFilter(event.target.value);
+    setShowImages(true);
   };
 
   const handleHeadShapeChange = (event) => {
     setHeadShapeFilter(event.target.value);
+    setShowImages(true);
   };
 
   const filteredData = snakeList.filter(item => {
@@ -58,7 +61,7 @@ const ImageListWithTitle = ({ onImageClick }) => {
       .catch((error) => {
         console.error('Error fetching snake data:', error);
       });
-  
+
     Axios.get(`${SERVER_ADDRESS}/snakeColors`)
       .then((response) => {
         setColorOptions(response.data.map(color => color['蛇的顏色']));
@@ -89,7 +92,7 @@ const ImageListWithTitle = ({ onImageClick }) => {
 
   // Filter color options based on patternFilter and headShapeFilter
   const filteredColorOptions = snakeList
-    .filter(snake => 
+    .filter(snake =>
       (!patternFilter || snake.斑紋 === patternFilter) &&
       (!headShapeFilter || snake.頭部形狀 === headShapeFilter)
     )
@@ -98,7 +101,7 @@ const ImageListWithTitle = ({ onImageClick }) => {
 
   // Filter pattern options based on colorFilter and headShapeFilter
   const filteredPatternOptions = snakeList
-    .filter(snake => 
+    .filter(snake =>
       (!colorFilter || snake.顏色 === colorFilter) &&
       (!headShapeFilter || snake.頭部形狀 === headShapeFilter)
     )
@@ -111,7 +114,7 @@ const ImageListWithTitle = ({ onImageClick }) => {
 
   // Filter head shape options based on colorFilter and patternFilter
   const filteredHeadShapeOptions = snakeList
-    .filter(snake => 
+    .filter(snake =>
       (!colorFilter || snake.顏色 === colorFilter) &&
       (!patternFilter || snake.斑紋 === patternFilter)
     )
@@ -167,35 +170,43 @@ const ImageListWithTitle = ({ onImageClick }) => {
           </Select>
         </FormControl>
       </div>
-      <ImageList sx={{ width: '80%', maxWidth: 1200, height: 450 }}>
-        {filteredData.map((item) => (
-          <ImageListItem key={item.Snake_ID}>
-            <Button
-              onClick={() => onImageClick(item.藥品名稱)}
-              sx={{
-                padding: 0,
-                border: 'none',
-                backgroundColor: 'transparent',
-                width: '100%',
-                height: '100%',
-              }}
-            >
+      {showImages && (
+        <ImageList sx={{ width: '80%', maxWidth: 1800, height: 600 }}>
+          {filteredData.map((item) => (
+            <ImageListItem key={item.Snake_ID} >
+              <div style={{ display: 'flex', width: '100%', height: 350 }}>
               <img
                 srcSet={`${item.圖片URL}`}
                 src={`${item.圖片URL}`}
                 alt={item.種類}
                 loading="lazy"
-                style={{ width: '100%', height: '100%' }}
+                style={{ width: '50%', height: '100%' }}
               />
-            </Button>
-            <ImageListItemBar
-              title={item.種類}
-              subtitle={<span>「{item.毒性}」 「{item.藥品名稱 ? `${item.藥品名稱}` : '無血清'}」</span>}
-              position="below"
-            />
-          </ImageListItem>
-        ))}
-      </ImageList>
+              <img
+                srcSet={`${item.圖片URL2}`}
+                src={`${item.圖片URL2}`}
+                alt={item.種類}
+                loading="lazy"
+                style={{ width: '50%', height: '100%' }}
+              />
+              </div>
+              <ImageListItemBar
+                title={item.種類}
+                subtitle={<span>「{item.毒性}」 「{item.藥品名稱 ? `${item.藥品名稱}` : '無血清'}」</span>}
+                position="below"
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => onImageClick(item.藥品名稱)}
+                sx={{ marginTop: 1 }}
+              >
+                血清查詢
+              </Button>
+            </ImageListItem>
+          ))}
+        </ImageList>
+      )}
     </div>
   );
 };
