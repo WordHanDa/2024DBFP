@@ -30,17 +30,17 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
         if (results[0]) {
           const addressComponents = results[0].address_components;
           let city = '';
-          let street = '';
+          let site = '';
 
           addressComponents.forEach(component => {
             if (component.types.includes('administrative_area_level_1')) {
               city = component.long_name;
             }
             if (component.types.includes('administrative_area_level_2')) {
-              street = component.long_name;
+              site = component.long_name;
             }
           });
-          console.log(`User location: ${city}, ${street}`);
+          console.log(`User location: ${city}, ${site}`);
         } else {
           console.log('No results found');
         }
