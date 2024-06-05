@@ -20,12 +20,29 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
     });
   };
 
+  const handleUserLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const userPosition = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        setCenter(userPosition);
+        setZoom(14);
+      },
+      (error) => {
+        console.error(`Error getting location: ${error.message}`);
+        alert('請允許存取使用者位置功能');
+      }
+    );
+  };
+
+  useEffect(() => {
+    handleUserLocation();
+  }, []);
+
   useEffect(() => {
     if (selectedRows.length > 0) {
-      selectedRows.forEach(row => {
-        console.log(`Hospital Name: ${row.醫院名稱}, Address: ${row.醫院地址}`);
-      });
-
       const firstRow = selectedRows[0];
       geocodeAddress(firstRow.醫院地址)
         .then(location => {
@@ -36,8 +53,7 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
           console.error(error);
         });
     } else {
-      setCenter({ lat: 25.0718, lng: 121.591982 }); // Reset to default center
-      setZoom(14); // Reset to default zoom
+      handleUserLocation();
     }
   }, [selectedRows]);
 
