@@ -22,6 +22,35 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
     });
   };
 
+  const reverseGeocode = (lat, lng) => {
+    const geocoder = new window.google.maps.Geocoder();
+    const latlng = { lat: lat, lng: lng };
+    geocoder.geocode({ location: latlng }, (results, status) => {
+      if (status === 'OK') {
+        if (results[0]) {
+          const addressComponents = results[0].address_components;
+          let city = '';
+          let street = '';
+
+          addressComponents.forEach(component => {
+            if (component.types.includes('administrative_area_level_1')) {
+              city = component.long_name;
+            }
+            if (component.types.includes('administrative_area_level_2')) {
+              street = component.long_name;
+            }
+          });
+
+          console.log(`User location: ${city}, ${street}`);
+        } else {
+          console.log('No results found');
+        }
+      } else {
+        console.log(`Geocoder failed due to: ${status}`);
+      }
+    });
+  };
+
   const handleUserLocation = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -32,6 +61,7 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
         setUserLocation(userPosition);
         setCenter(userPosition);
         setZoom(14);
+        reverseGeocode(userPosition.lat, userPosition.lng);
       },
       (error) => {
         console.error(`Error getting location: ${error.message}`);
@@ -73,8 +103,6 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
         .catch(error => {
           console.error(error);
         });
-    } else {
-      handleUserLocation();
     }
   }, [selectedRows, userLocation]);
 
