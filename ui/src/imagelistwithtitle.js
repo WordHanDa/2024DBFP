@@ -1,3 +1,4 @@
+// ImageListWithTitle.js
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import ImageList from '@mui/material/ImageList';
@@ -10,7 +11,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Avatar from '@mui/material/Avatar';
 
-
 const SERVER_ADDRESS = "http://172.27.6.192:3001";
 
 const imageListContainerStyle = {
@@ -21,11 +21,7 @@ const imageListContainerStyle = {
   padding: '10px',
 };
 
-const handleButtonClick = (title) => {
-  console.log(`Image title: ${title}`);
-};
-
-const ImageListWithTitle = () => {
+const ImageListWithTitle = ({ onImageClick }) => {
   const [colorFilter, setColorFilter] = useState('');
   const [patternFilter, setPatternFilter] = useState('');
   const [headShapeFilter, setHeadShapeFilter] = useState('');
@@ -175,7 +171,7 @@ const ImageListWithTitle = () => {
         {filteredData.map((item) => (
           <ImageListItem key={item.Snake_ID}>
             <Button
-              onClick={() => handleButtonClick(item.種類)}
+              onClick={() => onImageClick(item.藥品名稱)}
               sx={{
                 padding: 0,
                 border: 'none',
@@ -194,7 +190,7 @@ const ImageListWithTitle = () => {
             </Button>
             <ImageListItemBar
               title={item.種類}
-              subtitle={<span>「{item.毒性}」 「{item.藥品名稱 ? `${item.藥品名稱}` : '無'}」</span>}
+              subtitle={<span>「{item.毒性}」 「{item.藥品名稱 ? `${item.藥品名稱}` : '無血清'}」</span>}
               position="below"
             />
           </ImageListItem>
