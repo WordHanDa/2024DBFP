@@ -10,7 +10,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Avatar from '@mui/material/Avatar';
 
-const SERVER_ADDRESS = "http://192.168.0.129:3001";
+
+const SERVER_ADDRESS = "http://172.27.6.192:3001";
 
 const imageListContainerStyle = {
   display: 'flex',
@@ -53,17 +54,15 @@ const ImageListWithTitle = () => {
   });
 
   useEffect(() => {
-    // Fetch snake data from backend
+    // Fetch initial snake data and options from backend
     Axios.get(`${SERVER_ADDRESS}/snakes`)
       .then((response) => {
-        console.log("Received snake data:", response.data);
         setSnakeList(response.data);
       })
       .catch((error) => {
         console.error('Error fetching snake data:', error);
       });
   
-    // Fetch color options from backend when component mounts
     Axios.get(`${SERVER_ADDRESS}/snakeColors`)
       .then((response) => {
         setColorOptions(response.data.map(color => color['蛇的顏色']));
@@ -71,8 +70,7 @@ const ImageListWithTitle = () => {
       .catch((error) => {
         console.error('Error fetching color options:', error);
       });
-  
-    // Fetch pattern options from backend when component mounts
+
     Axios.get(`${SERVER_ADDRESS}/snakePatterns`)
       .then((response) => {
         setPatternOptions(response.data.map(pattern => ({
@@ -83,8 +81,7 @@ const ImageListWithTitle = () => {
       .catch((error) => {
         console.error('Error fetching pattern options:', error);
       });
-  
-    // Fetch head shape options from backend when component mounts
+
     Axios.get(`${SERVER_ADDRESS}/head`)
       .then((response) => {
         setHeadShapeOptions(response.data.map(headShape => headShape['頭部形狀']));
@@ -93,6 +90,37 @@ const ImageListWithTitle = () => {
         console.error('Error fetching head shape options:', error);
       });
   }, []);
+
+  // Filter color options based on patternFilter and headShapeFilter
+  const filteredColorOptions = snakeList
+    .filter(snake => 
+      (!patternFilter || snake.斑紋 === patternFilter) &&
+      (!headShapeFilter || snake.頭部形狀 === headShapeFilter)
+    )
+    .map(snake => snake.顏色)
+    .filter((color, index, self) => self.indexOf(color) === index);
+
+  // Filter pattern options based on colorFilter and headShapeFilter
+  const filteredPatternOptions = snakeList
+    .filter(snake => 
+      (!colorFilter || snake.顏色 === colorFilter) &&
+      (!headShapeFilter || snake.頭部形狀 === headShapeFilter)
+    )
+    .map(snake => snake.斑紋)
+    .filter((pattern, index, self) => self.indexOf(pattern) === index)
+    .map(pattern => ({
+      pattern: pattern,
+      patternImageURL: patternOptions.find(option => option.pattern === pattern)?.patternImageURL
+    }));
+
+  // Filter head shape options based on colorFilter and patternFilter
+  const filteredHeadShapeOptions = snakeList
+    .filter(snake => 
+      (!colorFilter || snake.顏色 === colorFilter) &&
+      (!patternFilter || snake.斑紋 === patternFilter)
+    )
+    .map(snake => snake.頭部形狀)
+    .filter((headShape, index, self) => self.indexOf(headShape) === index);
 
   return (
     <div style={imageListContainerStyle}>
@@ -106,7 +134,7 @@ const ImageListWithTitle = () => {
             label="顏色"
           >
             <MenuItem value=""><em>全部</em></MenuItem>
-            {colorOptions.map((color, index) => (
+            {filteredColorOptions.map((color, index) => (
               <MenuItem key={index} value={color}>{color}</MenuItem>
             ))}
           </Select>
@@ -120,7 +148,7 @@ const ImageListWithTitle = () => {
             label="斑紋"
           >
             <MenuItem value=""><em>全部</em></MenuItem>
-            {patternOptions.map((patternObj, index) => (
+            {filteredPatternOptions.map((patternObj, index) => (
               <MenuItem key={index} value={patternObj.pattern}>
                 <Avatar src={patternObj.patternImageURL} sx={{ marginRight: 1, width: 80, height: 90 }} />
                 {patternObj.pattern}
@@ -137,7 +165,7 @@ const ImageListWithTitle = () => {
             label="頭部形狀"
           >
             <MenuItem value=""><em>全部</em></MenuItem>
-            {headShapeOptions.map((headShape, index) => (
+            {filteredHeadShapeOptions.map((headShape, index) => (
               <MenuItem key={index} value={headShape}>{headShape}</MenuItem>
             ))}
           </Select>
