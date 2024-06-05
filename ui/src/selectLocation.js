@@ -1,4 +1,4 @@
-import './App.css'
+// SelectLocation.js
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import FormControl from '@mui/material/FormControl';
@@ -7,9 +7,9 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import CircularProgress from '@mui/material/CircularProgress';
 
-const SERVER_ADDRESS = 'http://192.168.0.129:3001';
+const SERVER_ADDRESS = 'http://172.27.6.192:3001';
 
-const SelectLocation = ({ handleLocationChange }) => {
+const SelectLocation = ({ selectedSerum, handleLocationChange }) => {
   const [location, setLocation] = useState({ city: '', district: '', road: '', serum: '' });
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -54,6 +54,12 @@ const SelectLocation = ({ handleLocationChange }) => {
       setRoads([]);
     }
   }, [location.district]);
+
+  useEffect(() => {
+    if (selectedSerum) {
+      setLocation(prevState => ({ ...prevState, serum: selectedSerum }));
+    }
+  }, [selectedSerum]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
