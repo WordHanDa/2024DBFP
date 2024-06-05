@@ -44,8 +44,6 @@ const Datagrid = ({ selectedLocation }) => {
     getHospitals();
   }, []);
 
-  
-
   useEffect(() => {
     const applyFilters = () => {
       const { city, district, road, serum } = selectedLocation;
@@ -60,7 +58,6 @@ const Datagrid = ({ selectedLocation }) => {
       });
       setFilteredRows(filteredData);
     };
-
     if (rows.length > 0) {
       applyFilters();
     }
