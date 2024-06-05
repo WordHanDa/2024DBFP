@@ -118,10 +118,7 @@ app.delete("/deleteHospital/:code", (req, res) => {
   });
 });
 
-<<<<<<< Updated upstream
 //--------------
-=======
->>>>>>> Stashed changes
 app.get("/poisonLevels", (req, res) => {
   db.query("SELECT * FROM 蛇的毒性", (err, result) => {
     if (err) {
@@ -164,7 +161,6 @@ app.get("/head", (req, res) => {
     }
   });
 });
-<<<<<<< Updated upstream
 
 //------------
 app.post("/createColor", (req, res) => {
@@ -466,7 +462,7 @@ app.get("/snakeSerum", (req, res) => {
 });
 
 app.get("/hospital", (req, res) => {
-  db.query("SELECT road, site, city, hospital.醫事機構代碼, hospital.醫院名稱, 醫院電話, 醫院地址, 藥品名稱 FROM hospital NATURAL JOIN road NATURAL JOIN site NATURAL JOIN city left join 存放位置 on hospital.醫事機構代碼 = 存放位置.醫事機構代碼 and hospital.醫院名稱 = 存放位置.醫院名稱;", (err, result) => {
+  db.query("SELECT hospital.醫事機構代碼, hospital.醫院名稱, 醫院電話, 醫院地址, 藥品名稱 FROM hospital left join 存放位置 on hospital.醫事機構代碼 = 存放位置.醫事機構代碼 and hospital.醫院名稱 = 存放位置.醫院名稱;", (err, result) => {
     if (err) {
       console.log(err);
     } else {
@@ -474,8 +470,7 @@ app.get("/hospital", (req, res) => {
     }
   });
 });
-=======
->>>>>>> Stashed changes
+
 
 app.listen(3001, () => {
   console.log("Yey, your server is running on port 3001");
