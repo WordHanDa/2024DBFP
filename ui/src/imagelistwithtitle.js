@@ -174,7 +174,7 @@ const ImageListWithTitle = ({ onImageClick }) => {
         <ImageList sx={{ width: '80%', maxWidth: 1800, height: 600 }}>
           {filteredData.map((item) => (
             <ImageListItem key={item.Snake_ID} >
-              <div style={{ display: 'flex', width: '100%', height: 300 }}>
+              <div style={{ display: 'flex', width: '100%', height: 250 }}>
               <img
                 srcSet={`${item.圖片URL}`}
                 src={`${item.圖片URL}`}
