@@ -1,4 +1,3 @@
-// SelectLocation.js
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import FormControl from '@mui/material/FormControl';
@@ -9,7 +8,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 const SERVER_ADDRESS = 'http://172.27.6.192:3001';
 
-const SelectLocation = ({ selectedSerum, handleLocationChange }) => {
+const SelectLocation = React.forwardRef(({ selectedSerum, handleLocationChange }, ref) => {
   const [location, setLocation] = useState({ city: '', district: '', road: '', serum: '' });
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -85,7 +84,7 @@ const SelectLocation = ({ selectedSerum, handleLocationChange }) => {
   };
 
   return (
-    <div className="containerStyle">
+    <div ref={ref} className="containerStyle">
       <div>
         <h1 className="styleArgument">選擇所在位置</h1>
       </div>
@@ -155,6 +154,6 @@ const SelectLocation = ({ selectedSerum, handleLocationChange }) => {
       </FormControl>
     </div>
   );
-};
+});
 
 export default SelectLocation;
