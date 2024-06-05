@@ -118,7 +118,10 @@ app.delete("/deleteHospital/:code", (req, res) => {
   });
 });
 
+<<<<<<< Updated upstream
 //--------------
+=======
+>>>>>>> Stashed changes
 app.get("/poisonLevels", (req, res) => {
   db.query("SELECT * FROM 蛇的毒性", (err, result) => {
     if (err) {
@@ -161,6 +164,7 @@ app.get("/head", (req, res) => {
     }
   });
 });
+<<<<<<< Updated upstream
 
 //------------
 app.post("/createColor", (req, res) => {
@@ -470,6 +474,8 @@ app.get("/hospital", (req, res) => {
     }
   });
 });
+=======
+>>>>>>> Stashed changes
 
 app.listen(3001, () => {
   console.log("Yey, your server is running on port 3001");
