@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { LoadScript, GoogleMap } from '@react-google-maps/api';
+import { LoadScript, GoogleMap, Marker, DirectionsRenderer } from '@react-google-maps/api';
 
 const MapWithMarkerCluster = ({ selectedRows }) => {
   const [map, setMap] = useState(null);
   const [center, setCenter] = useState({ lat: 25.0718, lng: 121.591982 }); // Default center
   const [zoom, setZoom] = useState(14); // Default zoom level
+  const [userLocation, setUserLocation] = useState(null);
+  const [directions, setDirections] = useState(null);
   const markersRef = React.useRef([]);
 
   const geocodeAddress = (address) => {
@@ -27,6 +29,7 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
+        setUserLocation(userPosition);
         setCenter(userPosition);
         setZoom(14);
       },
@@ -37,17 +40,35 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
     );
   };
 
+  const getDirections = (origin, destination) => {
+    const directionsService = new window.google.maps.DirectionsService();
+    const request = {
+      origin: origin,
+      destination: destination,
+      travelMode: window.google.maps.TravelMode.WALKING,
+    };
+    
+    directionsService.route(request, (response, status) => {
+      if (status === window.google.maps.DirectionsStatus.OK) {
+        setDirections(response);
+      } else {
+        console.error(`Directions request failed due to ${status}`);
+      }
+    });
+  };
+
   useEffect(() => {
     handleUserLocation();
   }, []);
 
   useEffect(() => {
-    if (selectedRows.length > 0) {
+    if (selectedRows.length > 0 && userLocation) {
       const firstRow = selectedRows[0];
       geocodeAddress(firstRow.醫院地址)
         .then(location => {
           setCenter({ lat: location.lat(), lng: location.lng() });
           setZoom(14); // Set zoom level
+          getDirections(userLocation, { lat: location.lat(), lng: location.lng() });
         })
         .catch(error => {
           console.error(error);
@@ -55,7 +76,7 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
     } else {
       handleUserLocation();
     }
-  }, [selectedRows]);
+  }, [selectedRows, userLocation]);
 
   useEffect(() => {
     if (map) {
@@ -102,7 +123,19 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
         center={center}
         zoom={zoom}
         onLoad={(map) => setMap(map)}
-      />
+      >
+        {userLocation && (
+          <Marker 
+            position={userLocation} 
+            title="Your Location"
+          />
+        )}
+        {directions && (
+          <DirectionsRenderer
+            directions={directions}
+          />
+        )}
+      </GoogleMap>
     </LoadScript>
   );
 };
