@@ -7,7 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import CircularProgress from '@mui/material/CircularProgress';
 
-const SERVER_ADDRESS = 'http://172.20.10.4:3001';
+const SERVER_ADDRESS = 'http://192.168.0.129:3001';
 
 const SelectLocation = ({ handleLocationChange }) => {
   const [location, setLocation] = useState({ city: '', district: '', road: '', serum: '' });
