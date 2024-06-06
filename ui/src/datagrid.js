@@ -3,7 +3,7 @@ import { DataGrid } from '@material-ui/data-grid';
 import MapWithMarkerCluster from './map';
 import Axios from 'axios';
 
-const Datagrid = ({ selectedLocation ,SERVER_ADDRESS}) => {
+const Datagrid = ({ selectedLocation, SERVER_ADDRESS }) => {
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
@@ -40,7 +40,7 @@ const Datagrid = ({ selectedLocation ,SERVER_ADDRESS}) => {
       }
     };
     getHospitals();
-  });
+  }, [SERVER_ADDRESS]);
 
   useEffect(() => {
     const applyFilters = () => {

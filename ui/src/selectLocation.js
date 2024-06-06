@@ -58,6 +58,10 @@ const SelectLocation = React.forwardRef(({ selectedSerum, handleLocationChange, 
     }
   }, [selectedSerum]);
 
+  useEffect(() => {
+    handleLocationChange(location);
+  }, [location, handleLocationChange]);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setLocation(prevState => {
@@ -68,7 +72,6 @@ const SelectLocation = React.forwardRef(({ selectedSerum, handleLocationChange, 
       } else if (name === 'district') {
         newLocation.road = '';
       }
-      handleLocationChange(newLocation);
       return newLocation;
     });
   };
@@ -120,7 +123,7 @@ const SelectLocation = React.forwardRef(({ selectedSerum, handleLocationChange, 
   const menuProps = {
     PaperProps: {
       style: {
-        width: 250, // Set the width of the dropdown menu
+        width: 250,
       },
     },
   };
