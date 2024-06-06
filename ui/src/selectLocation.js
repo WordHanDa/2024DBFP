@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import CircularProgress from '@mui/material/CircularProgress';
 
-const SelectLocation = React.forwardRef(({ selectedSerum, handleLocationChange,SERVER_ADDRESS}, ref) => {
+const SelectLocation = React.forwardRef(({ selectedSerum, handleLocationChange, SERVER_ADDRESS }, ref) => {
   const [location, setLocation] = useState({ city: '', district: '', road: '', serum: '' });
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -21,12 +21,12 @@ const SelectLocation = React.forwardRef(({ selectedSerum, handleLocationChange,S
       .then(response => setCities(response.data))
       .catch(error => console.error('Error fetching city data:', error))
       .finally(() => setLoadingCities(false));
-  
+
     Axios.get(`${SERVER_ADDRESS}/snakeSerum`)
       .then(response => setSerums(response.data))
       .catch(error => console.error('Error fetching snakeSerum data:', error));
-  });
-  
+  }, [SERVER_ADDRESS]);
+
   useEffect(() => {
     if (location.city) {
       setLoadingDistricts(true);
@@ -38,8 +38,8 @@ const SelectLocation = React.forwardRef(({ selectedSerum, handleLocationChange,S
       setDistricts([]);
       setRoads([]);
     }
-  }, [location.city,SERVER_ADDRESS]);
-  
+  }, [location.city, SERVER_ADDRESS]);
+
   useEffect(() => {
     if (location.district) {
       setLoadingRoads(true);
@@ -50,7 +50,7 @@ const SelectLocation = React.forwardRef(({ selectedSerum, handleLocationChange,S
     } else {
       setRoads([]);
     }
-  }, [location.district,SERVER_ADDRESS]);
+  }, [location.district, SERVER_ADDRESS]);
 
   useEffect(() => {
     if (selectedSerum) {
@@ -72,6 +72,50 @@ const SelectLocation = React.forwardRef(({ selectedSerum, handleLocationChange,S
       return newLocation;
     });
   };
+
+  const reverseGeocode = (lat, lng) => {
+    const geocoder = new window.google.maps.Geocoder();
+    const latlng = { lat: lat, lng: lng };
+    geocoder.geocode({ location: latlng }, (results, status) => {
+      if (status === 'OK') {
+        if (results[0]) {
+          const addressComponents = results[0].address_components;
+          let city = '';
+          let district = '';
+
+          addressComponents.forEach(component => {
+            if (component.types.includes('administrative_area_level_1')) {
+              city = component.long_name;
+            }
+            if (component.types.includes('administrative_area_level_2')) {
+              district = component.long_name;
+            }
+          });
+
+          setLocation(prevState => ({ ...prevState, city, district }));
+        } else {
+          console.log('No results found');
+        }
+      } else {
+        console.log(`Geocoder failed due to: ${status}`);
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          reverseGeocode(position.coords.latitude, position.coords.longitude);
+        },
+        (error) => {
+          console.error('Error getting user location:', error);
+        }
+      );
+    } else {
+      console.log('Geolocation is not supported by this browser.');
+    }
+  }, []);
 
   const menuProps = {
     PaperProps: {
