@@ -40,7 +40,7 @@ const Datagrid = ({ selectedLocation ,SERVER_ADDRESS}) => {
       }
     };
     getHospitals();
-  }, []);
+  });
 
   useEffect(() => {
     const applyFilters = () => {

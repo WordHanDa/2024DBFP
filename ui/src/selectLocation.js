@@ -25,7 +25,7 @@ const SelectLocation = React.forwardRef(({ selectedSerum, handleLocationChange,S
     Axios.get(`${SERVER_ADDRESS}/snakeSerum`)
       .then(response => setSerums(response.data))
       .catch(error => console.error('Error fetching snakeSerum data:', error));
-  }, []);
+  });
   
   useEffect(() => {
     if (location.city) {
@@ -38,7 +38,7 @@ const SelectLocation = React.forwardRef(({ selectedSerum, handleLocationChange,S
       setDistricts([]);
       setRoads([]);
     }
-  }, [location.city]);
+  }, [location.city,SERVER_ADDRESS]);
   
   useEffect(() => {
     if (location.district) {
@@ -50,7 +50,7 @@ const SelectLocation = React.forwardRef(({ selectedSerum, handleLocationChange,S
     } else {
       setRoads([]);
     }
-  }, [location.district]);
+  }, [location.district,SERVER_ADDRESS]);
 
   useEffect(() => {
     if (selectedSerum) {
