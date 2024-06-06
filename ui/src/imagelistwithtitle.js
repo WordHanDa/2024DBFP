@@ -10,8 +10,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Avatar from '@mui/material/Avatar';
 
-const SERVER_ADDRESS = "http://172.27.6.192:3001";
-
 const imageListContainerStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -20,7 +18,7 @@ const imageListContainerStyle = {
   padding: '10px',
 };
 
-const ImageListWithTitle = ({ onImageClick }) => {
+const ImageListWithTitle = ({ onImageClick ,SERVER_ADDRESS}) => {
   const [colorFilter, setColorFilter] = useState('');
   const [patternFilter, setPatternFilter] = useState('');
   const [headShapeFilter, setHeadShapeFilter] = useState('');

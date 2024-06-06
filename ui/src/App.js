@@ -8,6 +8,8 @@ import SelectLocation from './selectLocation';
 import Datagrid from './datagrid';
 import React, { useState, useRef } from 'react';
 
+const SERVER_ADDRESS = "http://172.27.6.192:3001";
+
 const App = () => {
   const [selectedLocation, setSelectedLocation] = useState({ city: '', district: '', road: '', serum: '' });
   const [selectedSerum, setSelectedSerum] = useState('');
@@ -35,13 +37,13 @@ const App = () => {
         <SnakeFeature />
       </div>
       <div className="containerStyle">
-        <ImageListWithTitle onImageClick={handleImageClick} />
+        <ImageListWithTitle onImageClick={handleImageClick} SERVER_ADDRESS={SERVER_ADDRESS} />
       </div>
       <div ref={selectLocationRef}> {/* Attach the ref here */}
-        <SelectLocation selectedSerum={selectedSerum} handleLocationChange={handleLocationChange} />
+        <SelectLocation selectedSerum={selectedSerum} handleLocationChange={handleLocationChange} SERVER_ADDRESS={SERVER_ADDRESS}/>
       </div>
       <div>
-        <Datagrid selectedLocation={selectedLocation} />
+        <Datagrid selectedLocation={selectedLocation} SERVER_ADDRESS={SERVER_ADDRESS}/>
       </div>
       <div>
         <SerumMapFooter />

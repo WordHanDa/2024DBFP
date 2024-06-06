@@ -3,9 +3,7 @@ import { DataGrid } from '@material-ui/data-grid';
 import MapWithMarkerCluster from './map';
 import Axios from 'axios';
 
-const SERVER_ADDRESS = "http://172.27.6.192:3001";
-
-const Datagrid = ({ selectedLocation }) => {
+const Datagrid = ({ selectedLocation ,SERVER_ADDRESS}) => {
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);

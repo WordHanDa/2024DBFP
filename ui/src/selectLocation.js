@@ -6,9 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import CircularProgress from '@mui/material/CircularProgress';
 
-const SERVER_ADDRESS = 'http://172.27.6.192:3001';
-
-const SelectLocation = React.forwardRef(({ selectedSerum, handleLocationChange }, ref) => {
+const SelectLocation = React.forwardRef(({ selectedSerum, handleLocationChange,SERVER_ADDRESS}, ref) => {
   const [location, setLocation] = useState({ city: '', district: '', road: '', serum: '' });
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
