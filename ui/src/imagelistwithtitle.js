@@ -24,9 +24,9 @@ const ImageListWithTitle = ({ onImageClick ,SERVER_ADDRESS}) => {
   const [headShapeFilter, setHeadShapeFilter] = useState('');
   const [snakeList, setSnakeList] = useState([]);
   const [showImages, setShowImages] = useState(false);
-
+  const [colorOptions, setColorOptions] = useState([]);
   const [patternOptions, setPatternOptions] = useState([]);
-
+  const [headShapeOptions, setHeadShapeOptions] = useState([]);
   const handleColorChange = (event) => {
     setColorFilter(event.target.value);
     setShowImages(true);
@@ -66,6 +66,20 @@ const ImageListWithTitle = ({ onImageClick ,SERVER_ADDRESS}) => {
       })
       .catch((error) => {
         console.error('Error fetching pattern options:', error);
+      });
+    Axios.get(`${SERVER_ADDRESS}/snakeColors`)
+      .then((response) => {
+        setColorOptions(response.data.map(color => color['蛇的顏色']));
+      })
+      .catch((error) => {
+        console.error('Error fetching color options:', error);
+      });
+    Axios.get(`${SERVER_ADDRESS}/head`)
+      .then((response) => {
+        setHeadShapeOptions(response.data.map(headShape => headShape['頭部形狀']));
+      })
+      .catch((error) => {
+        console.error('Error fetching head shape options:', error);
       });
   });
 
