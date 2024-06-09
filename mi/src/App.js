@@ -15,7 +15,7 @@ import HeadShapeTable from "./HeadShapeTable";
 import LocationForm from "./LocationForm"; 
 import LocationTable from "./LocationTable"; 
 
-const SERVER_ADDRESS = "http://172.27.6.192:3001";
+const SERVER_ADDRESS = "http://localhost:3001";
 
 function App() {
   const [selectedTable, setSelectedTable] = useState("snake");
@@ -30,6 +30,7 @@ function App() {
   const [headShape, setHeadShape] = useState("");
   const [antivenomId, setAntivenomId] = useState(null);
   const [url, seturl] = useState("");
+  const [url2, seturl2] = useState("");
   const [snakeList, setSnakeList] = useState([]);
   const [updateField, setUpdateField] = useState("poison");
   const [updateValue, setUpdateValue] = useState("");
@@ -78,35 +79,61 @@ function App() {
   const itemsPerPage = 10;
 
   const addSnake = () => {
-    Axios.post(`${SERVER_ADDRESS}/createSnake`, {
-      snakeID: snakeID, 
-      name: snakeName,
-      poison: poison,
-      time: shape, 
-      color: color,
-      pattern: pattern,
-      headShape: headShape,
-      antivenomId: antivenomId,
-      url: url
-    }).then(() => {
-      setSnakeID(""); 
-      setSnakeName("");
-      setPoison("");
-      setColor("");
-      setShape("");
-      setPattern("");
-      setHeadShape("");
-      setAntivenomId("");
-      seturl("");
-      getSnakes();
+    // 檢查是否已存在相同名稱及顏色的蛇
+    Axios.get(`${SERVER_ADDRESS}/snakes`).then((response) => {
+      const existingSnake = response.data.find(snake => 
+        snake.種類 === snakeName && snake.顏色 === color
+      );
+  
+      if (existingSnake) {
+        alert("A snake with the same name and color already exists.");
+      } else {
+        // 若不存在相同的蛇，則新增蛇
+        Axios.post(`${SERVER_ADDRESS}/createSnake`, {
+          snakeID: snakeID, 
+          name: snakeName,
+          poison: poison,
+          time: shape, 
+          color: color,
+          pattern: pattern,
+          headShape: headShape,
+          antivenomId: antivenomId,
+          url: url,
+          url2: url2
+        }).then(() => {
+          setSnakeID(""); 
+          setSnakeName("");
+          setPoison("");
+          setColor("");
+          setShape("");
+          setPattern("");
+          setHeadShape("");
+          setAntivenomId("");
+          seturl("");
+          seturl2("");
+          getSnakes();
+        }).catch((error) => {
+          console.error("Error adding snake:", error);
+          alert("Failed to add snake");
+        });
+      }
+    }).catch((error) => {
+      console.error("Error checking existing snakes:", error);
+      alert("Failed to check existing snakes");
     });
   };
+  
+  
   
   const getSnakes = () => {
     Axios.get(`${SERVER_ADDRESS}/snakes`).then((response) => {
       setSnakeList(response.data);
+    }).catch((error) => {
+      console.error("Error fetching snakes:", error);
+      alert("Failed to fetch snakes");
     });
   };
+  
   
   const updateSnake = (id, field, value) => {
     Axios.put(`${SERVER_ADDRESS}/updateSnake`, {
@@ -119,8 +146,12 @@ function App() {
           return val.Snake_ID === id ? { ...val, [field]: value } : val;
         })
       );
+    }).catch((error) => {
+      console.error("Error updating snake:", error);
+      alert("Failed to update snake");
     });
   };
+  
   
   const deleteSnake = (id) => {
     if (window.confirm(`Are you sure you want to delete the snake with ID ${id}?`)) {
@@ -130,24 +161,52 @@ function App() {
             return val.Snake_ID !== id;
           })
         );
+      }).catch((error) => {
+        console.error("Error deleting snake:", error);
+        alert("Failed to delete snake");
       });
     }
   };
+  
   //--------------------------------
   const addHospital = () => {
-    Axios.post(`${SERVER_ADDRESS}/createHospital`, {
-      code: hospitalCode,
-      name: hospitalName,
-      address: hospitalAddress,
-      phone: hospitalPhone,
-    }).then(() => {
-      setHospitalCode("");
-      setHospitalName("");
-      setHospitalAddress("");
-      setHospitalPhone("");
-      getHospitals();
+    // 检查是否已存在相同名称及代码的医院
+    Axios.get(`${SERVER_ADDRESS}/hospitals`).then((response) => {
+      const existingHospital = response.data.find(hospital => 
+        hospital.醫院名稱 === hospitalName && hospital.醫事機構代碼 === hospitalCode
+      );
+  
+      if (existingHospital) {
+        alert("A hospital with the same name and code already exists.");
+      } else {
+        // 若不存在相同的医院，则新增医院
+        Axios.post(`${SERVER_ADDRESS}/createHospital`, {
+          code: hospitalCode,
+          name: hospitalName,
+          address: hospitalAddress,
+          phone: hospitalPhone,
+        }).then(() => {
+          setHospitalCode("");
+          setHospitalName("");
+          setHospitalAddress("");
+          setHospitalPhone("");
+          getHospitals();
+        }).catch((error) => {
+          console.error("Error adding hospital:", error);
+          if (error.response && error.response.status === 400) {
+            alert("A hospital with the same name or code already exists.");
+          } else {
+            alert("Failed to add hospital");
+          }
+        });
+      }
+    }).catch((error) => {
+      console.error("Error checking existing hospitals:", error);
+      alert("Failed to check existing hospitals");
     });
   };
+  
+    
   
   const getHospitals = () => {
     Axios.get(`${SERVER_ADDRESS}/hospitals`).then((response) => {
@@ -169,12 +228,12 @@ function App() {
     });
   };
   
-  const deleteHospital = (code) => {
-    if (window.confirm(`Are you sure you want to delete the hospital with code ${code}?`)) {
-      Axios.delete(`${SERVER_ADDRESS}/deleteHospital/${code}`).then((response) => {
+  const deleteHospital = (code, name) => {
+    if (window.confirm(`Are you sure you want to delete the hospital with code ${code} and name ${name}?`)) {
+      Axios.delete(`${SERVER_ADDRESS}/deleteHospital/${code}/${name}`).then((response) => {
         setHospitalList(
           hospitalList.filter((val) => {
-            return val['醫事機構代碼'] !== code;
+            return val['醫事機構代碼'] !== code || val['醫院名稱'] !== name;
           })
         );
       });
@@ -187,8 +246,16 @@ function App() {
     }).then(() => {
       setColorName("");
       getColors();
+    }).catch((error) => {
+      console.error("Error adding color:", error);
+      if (error.response && error.response.status === 400) {
+        alert("A color with the same name already exists.");
+      } else {
+        alert("Failed to add color");
+      }
     });
   };
+  
   
   const getColors = () => {
     Axios.get(`${SERVER_ADDRESS}/colors`).then((response) => {
@@ -230,8 +297,16 @@ function App() {
       setPatternName("");
       setPatternURL("");
       getPatterns();
+    }).catch((error) => {
+      console.error("Error adding pattern:", error);
+      if (error.response && error.response.status === 400) {
+        alert("A pattern with the same name already exists.");
+      } else {
+        alert("Failed to add pattern");
+      }
     });
   };
+  
   
   const getPatterns = () => {
     Axios.get(`${SERVER_ADDRESS}/patterns`).then((response) => {
@@ -267,8 +342,16 @@ function App() {
     }).then(() => {
       setHeadShapeName("");
       getHeadShapes();
+    }).catch((error) => {
+      console.error("Error adding head shape:", error);
+      if (error.response && error.response.status === 400) {
+        alert("A head shape with the same name already exists.");
+      } else {
+        alert("Failed to add head shape");
+      }
     });
   };
+  
   
   const getHeadShapes = () => {
     Axios.get(`${SERVER_ADDRESS}/headShapes`).then((response) => {
@@ -297,17 +380,38 @@ function App() {
 
   //-----------------------------------
   const addLocation = () => {
-    Axios.post(`${SERVER_ADDRESS}/createLocation`, {
-      hname: LocationHospital,
-      aname: LocationAntivenom,
-      hnumber: LocationHospitalNumber,
-    }).then(() => {
-      setLocationHospital("");
-      setLocationAntivenom("");
-      setLocationHospitalNumber("");
-      getLocations();
+    // 检查是否已存在相同的记录
+    Axios.get(`${SERVER_ADDRESS}/hospitals`).then((response) => {
+      const existingLocation = response.data.find(location => 
+        location.醫院名稱 === LocationHospital && 
+        location.藥品名稱 === LocationAntivenom &&
+        location.醫事機構代碼 === LocationHospitalNumber
+      );
+  
+      if (existingLocation) {
+        alert("A record with the same hospital name, antivenom name, and hospital number already exists.");
+      } else {
+        // 若不存在相同的记录，則新增记录
+        Axios.post(`${SERVER_ADDRESS}/createLocation`, {
+          hname: LocationHospital,
+          aname: LocationAntivenom,
+          hnumber: LocationHospitalNumber,
+        }).then(() => {
+          setLocationHospital("");
+          setLocationAntivenom("");
+          setLocationHospitalNumber("");
+          getLocations();
+        }).catch((error) => {
+          console.error("Error adding location:", error);
+          alert("Failed to add location");
+        });
+      }
+    }).catch((error) => {
+      console.error("Error checking existing locations:", error);
+      alert("Failed to check existing locations");
     });
   };
+  
   
   const getLocations = () => {
     Axios.get(`${SERVER_ADDRESS}/Location`).then((response) => {

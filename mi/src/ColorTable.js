@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Pagination from "./Pagination";
 
 function ColorTable({
@@ -13,13 +13,24 @@ function ColorTable({
   itemsPerPage,
   handlePageChange,
 }) {
+  const [selectedColor, setSelectedColor] = useState(null);
+
+  const handleSearchChange = (event) => {
+    setSearchColor(event.target.value);
+    handlePageChange(1); // Reset to the first page on search
+  };
+
   const filteredColorList = colorList.filter((val) =>
-    val['蛇的顏色'] ? val['蛇的顏色'].toLowerCase().includes(searchColor.toLowerCase()) : false
+    val["蛇的顏色"] ? val["蛇的顏色"].toLowerCase().includes(searchColor.toLowerCase()) : false
   );
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentColors = filteredColorList.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handleInputChange = (event) => {
+    setUpdateColorValue(event.target.value);
+  };
 
   return (
     <div className="colors">
@@ -28,7 +39,7 @@ function ColorTable({
           type="text"
           placeholder="Search Colors"
           value={searchColor}
-          onChange={(event) => setSearchColor(event.target.value)}
+          onChange={handleSearchChange}
         />
       </div>
       <table className="color-table">
@@ -41,23 +52,30 @@ function ColorTable({
         <tbody>
           {currentColors.map((val, key) => (
             <tr key={key}>
-              <td>{val['蛇的顏色']}</td>
+              <td>{val["蛇的顏色"]}</td>
               <td className="actions">
                 <input
                   type="text"
                   placeholder="Value"
-                  onChange={(event) => setUpdateColorValue(event.target.value)}
+                  value={
+                    selectedColor && selectedColor === val["蛇的顏色"] ? updateColorValue : ""
+                  }
+                  onChange={handleInputChange}
+                  onFocus={() => {
+                    setSelectedColor(val["蛇的顏色"]);
+                    setUpdateColorValue(val["蛇的顏色"]);
+                  }}
                 />
                 <div className="actions-row">
                   <button
                     className="update-button"
-                    onClick={() => updateColor(val['蛇的顏色'], updateColorValue)}
+                    onClick={() => updateColor(val["蛇的顏色"], updateColorValue)}
                   >
                     更新
                   </button>
                   <button
                     className="delete-button"
-                    onClick={() => deleteColor(val['蛇的顏色'])}
+                    onClick={() => deleteColor(val["蛇的顏色"])}
                   >
                     刪除
                   </button>

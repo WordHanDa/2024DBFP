@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { LoadScript, GoogleMap } from '@react-google-maps/api';
+import { LoadScript, GoogleMap, Marker, DirectionsRenderer } from '@react-google-maps/api';
 
 const MapWithMarkerCluster = ({ selectedRows }) => {
   const [map, setMap] = useState(null);
   const [center, setCenter] = useState({ lat: 25.0718, lng: 121.591982 }); // Default center
   const [zoom, setZoom] = useState(14); // Default zoom level
+  const [userLocation, setUserLocation] = useState(null);
+  const [directions, setDirections] = useState(null);
   const markersRef = React.useRef([]);
 
   const geocodeAddress = (address) => {
@@ -20,26 +22,88 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
     });
   };
 
-  useEffect(() => {
-    if (selectedRows.length > 0) {
-      selectedRows.forEach(row => {
-        console.log(`Hospital Name: ${row.醫院名稱}, Address: ${row.醫院地址}`);
-      });
+  const reverseGeocode = (lat, lng) => {
+    const geocoder = new window.google.maps.Geocoder();
+    const latlng = { lat: lat, lng: lng };
+    geocoder.geocode({ location: latlng }, (results, status) => {
+      if (status === 'OK') {
+        if (results[0]) {
+          const addressComponents = results[0].address_components;
+          let city = '';
+          let site = '';
 
+          addressComponents.forEach(component => {
+            if (component.types.includes('administrative_area_level_1')) {
+              city = component.long_name;
+            }
+            if (component.types.includes('administrative_area_level_2')) {
+              site = component.long_name;
+            }
+          });
+          console.log(`User location: ${city}, ${site}`);
+        } else {
+          console.log('No results found');
+        }
+      } else {
+        console.log(`Geocoder failed due to: ${status}`);
+      }
+    });
+  };
+
+  const handleUserLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const userPosition = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        setUserLocation(userPosition);
+        setCenter(userPosition);
+        setZoom(14);
+        reverseGeocode(userPosition.lat, userPosition.lng);
+      },
+      (error) => {
+        console.error(`Error getting location: ${error.message}`);
+        alert('請允許存取使用者位置功能');
+      }
+    );
+  };
+
+  const getDirections = (origin, destination) => {
+    const directionsService = new window.google.maps.DirectionsService();
+    const request = {
+      origin: origin,
+      destination: destination,
+      travelMode: window.google.maps.TravelMode.WALKING,
+    };
+    
+    directionsService.route(request, (response, status) => {
+      if (status === window.google.maps.DirectionsStatus.OK) {
+        setDirections(response);
+      } else {
+        console.error(`Directions request failed due to ${status}`);
+      }
+    });
+  };
+
+  useEffect(() => {
+    handleUserLocation();
+  }, []);
+
+  useEffect(() => {
+    if (selectedRows.length > 0 && userLocation) {
       const firstRow = selectedRows[0];
       geocodeAddress(firstRow.醫院地址)
         .then(location => {
           setCenter({ lat: location.lat(), lng: location.lng() });
           setZoom(14); // Set zoom level
+          getDirections(userLocation, { lat: location.lat(), lng: location.lng() });
         })
         .catch(error => {
           console.error(error);
         });
-    } else {
-      setCenter({ lat: 25.0718, lng: 121.591982 }); // Reset to default center
-      setZoom(14); // Reset to default zoom
     }
-  }, [selectedRows]);
+  }, [selectedRows, userLocation]);
 
   useEffect(() => {
     if (map) {
@@ -86,7 +150,19 @@ const MapWithMarkerCluster = ({ selectedRows }) => {
         center={center}
         zoom={zoom}
         onLoad={(map) => setMap(map)}
-      />
+      >
+        {userLocation && (
+          <Marker 
+            position={userLocation} 
+            title="Your Location"
+          />
+        )}
+        {directions && (
+          <DirectionsRenderer
+            directions={directions}
+          />
+        )}
+      </GoogleMap>
     </LoadScript>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import Pagination from "./Pagination";
 
-const SERVER_ADDRESS = "http://172.27.6.192:3001";
+const SERVER_ADDRESS = "http://localhost:3001";
 
 function SnakeTable({
   snakeList,
@@ -150,7 +150,7 @@ function SnakeTable({
             <option value="" disabled hidden>
               請選擇
             </option>
-            <option value={null}></option> 
+            <option value="">無</option> 
             <option value="抗百步蛇毒血清">抗百步蛇毒血清</option>
             <option value="抗雨傘節及飯匙倩蛇毒血清">抗雨傘節及飯匙倩蛇毒血清</option>
             <option value="抗龜殼花及赤尾鮐蛇毒血清">抗龜殼花及赤尾鮐蛇毒血清</option>
@@ -211,6 +211,7 @@ function SnakeTable({
                   onChange={(event) => {
                     setSelectedRow(key);
                     setUpdateField(event.target.value);
+                    setUpdateValue(val[event.target.value]);
                   }}
                 >
                   <option value="" disabled hidden>

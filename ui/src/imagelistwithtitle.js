@@ -10,9 +10,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Avatar from '@mui/material/Avatar';
 
-
-const SERVER_ADDRESS = "http://172.27.6.192:3001";
-
 const imageListContainerStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -21,30 +18,30 @@ const imageListContainerStyle = {
   padding: '10px',
 };
 
-const handleButtonClick = (title) => {
-  console.log(`Image title: ${title}`);
-};
-
-const ImageListWithTitle = () => {
+const ImageListWithTitle = ({ onImageClick ,SERVER_ADDRESS}) => {
   const [colorFilter, setColorFilter] = useState('');
   const [patternFilter, setPatternFilter] = useState('');
   const [headShapeFilter, setHeadShapeFilter] = useState('');
   const [snakeList, setSnakeList] = useState([]);
+  const [showImages, setShowImages] = useState(false);
 
-  const [colorOptions, setColorOptions] = useState([]);
   const [patternOptions, setPatternOptions] = useState([]);
+  const [colorOptions, setColorOptions] = useState([]);
   const [headShapeOptions, setHeadShapeOptions] = useState([]);
 
   const handleColorChange = (event) => {
     setColorFilter(event.target.value);
+    setShowImages(true);
   };
 
   const handlePatternChange = (event) => {
     setPatternFilter(event.target.value);
+    setShowImages(true);
   };
 
   const handleHeadShapeChange = (event) => {
     setHeadShapeFilter(event.target.value);
+    setShowImages(true);
   };
 
   const filteredData = snakeList.filter(item => {
@@ -62,15 +59,6 @@ const ImageListWithTitle = () => {
       .catch((error) => {
         console.error('Error fetching snake data:', error);
       });
-  
-    Axios.get(`${SERVER_ADDRESS}/snakeColors`)
-      .then((response) => {
-        setColorOptions(response.data.map(color => color['蛇的顏色']));
-      })
-      .catch((error) => {
-        console.error('Error fetching color options:', error);
-      });
-
     Axios.get(`${SERVER_ADDRESS}/snakePatterns`)
       .then((response) => {
         setPatternOptions(response.data.map(pattern => ({
@@ -81,29 +69,36 @@ const ImageListWithTitle = () => {
       .catch((error) => {
         console.error('Error fetching pattern options:', error);
       });
-
-    Axios.get(`${SERVER_ADDRESS}/head`)
+      Axios.get(`${SERVER_ADDRESS}/snakeColors`)
+      .then((response) => {
+        setColorOptions(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching color options:', error);
+      });
+      Axios.get(`${SERVER_ADDRESS}/head`)
       .then((response) => {
         setHeadShapeOptions(response.data.map(headShape => headShape['頭部形狀']));
       })
       .catch((error) => {
         console.error('Error fetching head shape options:', error);
       });
-  }, []);
+  
+  });
 
   // Filter color options based on patternFilter and headShapeFilter
-  const filteredColorOptions = snakeList
-    .filter(snake => 
-      (!patternFilter || snake.斑紋 === patternFilter) &&
-      (!headShapeFilter || snake.頭部形狀 === headShapeFilter)
+  const filteredColorOptions = colorOptions
+    .filter(蛇的顏色 =>
+      (!patternFilter || 蛇的顏色.斑紋 === patternFilter) &&
+      (!headShapeFilter || 蛇的顏色.頭部形狀 === headShapeFilter)
     )
-    .map(snake => snake.顏色)
+    .map(蛇的顏色 => 蛇的顏色.蛇的顏色)
     .filter((color, index, self) => self.indexOf(color) === index);
 
   // Filter pattern options based on colorFilter and headShapeFilter
-  const filteredPatternOptions = snakeList
-    .filter(snake => 
-      (!colorFilter || snake.顏色 === colorFilter) &&
+  const filteredPatternOptions = colorOptions
+    .filter(snake =>
+      (!colorFilter || snake.蛇的顏色 === colorFilter) &&
       (!headShapeFilter || snake.頭部形狀 === headShapeFilter)
     )
     .map(snake => snake.斑紋)
@@ -114,9 +109,9 @@ const ImageListWithTitle = () => {
     }));
 
   // Filter head shape options based on colorFilter and patternFilter
-  const filteredHeadShapeOptions = snakeList
-    .filter(snake => 
-      (!colorFilter || snake.顏色 === colorFilter) &&
+  const filteredHeadShapeOptions = colorOptions
+    .filter(snake =>
+      (!colorFilter || snake.蛇的顏色 === colorFilter) &&
       (!patternFilter || snake.斑紋 === patternFilter)
     )
     .map(snake => snake.頭部形狀)
@@ -171,35 +166,43 @@ const ImageListWithTitle = () => {
           </Select>
         </FormControl>
       </div>
-      <ImageList sx={{ width: '80%', maxWidth: 1200, height: 450 }}>
-        {filteredData.map((item) => (
-          <ImageListItem key={item.Snake_ID}>
-            <Button
-              onClick={() => handleButtonClick(item.種類)}
-              sx={{
-                padding: 0,
-                border: 'none',
-                backgroundColor: 'transparent',
-                width: '100%',
-                height: '100%',
-              }}
-            >
+      {showImages && (
+        <ImageList sx={{ width: '80%', maxWidth: 1800, height: 600 }}>
+          {filteredData.map((item) => (
+            <ImageListItem key={item.Snake_ID} >
+              <div style={{ display: 'flex', width: '100%', height: 250 }}>
               <img
                 srcSet={`${item.圖片URL}`}
                 src={`${item.圖片URL}`}
                 alt={item.種類}
                 loading="lazy"
-                style={{ width: '100%', height: '100%' }}
+                style={{ width: '50%', height: '100%' }}
               />
-            </Button>
-            <ImageListItemBar
-              title={item.種類}
-              subtitle={<span>「{item.毒性}」 「{item.藥品名稱 ? `${item.藥品名稱}` : '無'}」</span>}
-              position="below"
-            />
-          </ImageListItem>
-        ))}
-      </ImageList>
+              <img
+                srcSet={`${item.圖片URL2}`}
+                src={`${item.圖片URL2}`}
+                alt={item.種類}
+                loading="lazy"
+                style={{ width: '50%', height: '100%' }}
+              />
+              </div>
+              <ImageListItemBar
+                title={item.種類}
+                subtitle={<span>「{item.毒性}」 「{item.藥品名稱 ? `${item.藥品名稱}` : '無血清'}」</span>}
+                position="below"
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => onImageClick(item.藥品名稱)}
+                sx={{ marginTop: 1 }}
+              >
+                血清查詢
+              </Button>
+            </ImageListItem>
+          ))}
+        </ImageList>
+      )}
     </div>
   );
 };

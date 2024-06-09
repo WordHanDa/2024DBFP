@@ -1,5 +1,4 @@
-// PatternTable.js
-import React from "react";
+import React, { useState } from "react";
 import Pagination from "./Pagination";
 
 function PatternTable({
@@ -14,13 +13,24 @@ function PatternTable({
   itemsPerPage,
   handlePageChange,
 }) {
+  const [selectedPattern, setSelectedPattern] = useState(null);
+
+  const handleSearchChange = (event) => {
+    setSearchPattern(event.target.value);
+    handlePageChange(1); // Reset to the first page on search
+  };
+
   const filteredPatternList = patternList.filter((val) =>
-    val['蛇的斑紋'] ? val['蛇的斑紋'].toLowerCase().includes(searchPattern.toLowerCase()) : false
+    val["蛇的斑紋"] ? val["蛇的斑紋"].toLowerCase().includes(searchPattern.toLowerCase()) : false
   );
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentPatterns = filteredPatternList.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handleInputChange = (event) => {
+    setUpdatePatternValue(event.target.value);
+  };
 
   return (
     <div className="patterns">
@@ -29,7 +39,7 @@ function PatternTable({
           type="text"
           placeholder="Search Patterns"
           value={searchPattern}
-          onChange={(event) => setSearchPattern(event.target.value)}
+          onChange={handleSearchChange}
         />
       </div>
       <table className="pattern-table">
@@ -42,23 +52,30 @@ function PatternTable({
         <tbody>
           {currentPatterns.map((val, key) => (
             <tr key={key}>
-              <td>{val['蛇的斑紋']}</td>
+              <td>{val["蛇的斑紋"]}</td>
               <td className="actions">
                 <input
                   type="text"
                   placeholder="Value"
-                  onChange={(event) => setUpdatePatternValue(event.target.value)}
+                  value={
+                    selectedPattern && selectedPattern === val["蛇的斑紋"] ? updatePatternValue : ""
+                  }
+                  onChange={handleInputChange}
+                  onFocus={() => {
+                    setSelectedPattern(val["蛇的斑紋"]);
+                    setUpdatePatternValue(val["蛇的斑紋"]);
+                  }}
                 />
                 <div className="actions-row">
                   <button
                     className="update-button"
-                    onClick={() => updatePattern(val['蛇的斑紋'], updatePatternValue)}
+                    onClick={() => updatePattern(val["蛇的斑紋"], updatePatternValue)}
                   >
                     更新
                   </button>
                   <button
                     className="delete-button"
-                    onClick={() => deletePattern(val['蛇的斑紋'])}
+                    onClick={() => deletePattern(val["蛇的斑紋"])}
                   >
                     刪除
                   </button>

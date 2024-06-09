@@ -15,13 +15,22 @@ function LocationTable({
   const [updateField, setUpdateField] = useState("");
   const [updateValue, setUpdateValue] = useState("");
 
+  const handleSearchChange = (event) => {
+    setSearchLocation(event.target.value);
+    handlePageChange(1); // Reset to the first page on search
+  };
+
   const filteredLocationList = LocationList.filter((val) =>
-    val['醫院名稱'] ? val['醫院名稱'].toLowerCase().includes(searchLocation.toLowerCase()) : false
+    val["醫院名稱"] ? val["醫院名稱"].toLowerCase().includes(searchLocation.toLowerCase()) : false
   );
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentLocations = filteredLocationList.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handleInputChange = (event) => {
+    setUpdateValue(event.target.value);
+  };
 
   const handleUpdateClick = (rowKey, field, value) => {
     updateLocation(rowKey, field, value);
@@ -37,7 +46,7 @@ function LocationTable({
           type="text"
           placeholder="Search Locations"
           value={searchLocation}
-          onChange={(event) => setSearchLocation(event.target.value)}
+          onChange={handleSearchChange}
         />
       </div>
       <table className="location-table">
@@ -52,15 +61,16 @@ function LocationTable({
         <tbody>
           {currentLocations.map((val, key) => (
             <tr key={key}>
-              <td>{val['醫院名稱']}</td>
-              <td>{val['藥品名稱']}</td>
-              <td>{val['醫事機構代碼']}</td>
+              <td>{val["醫院名稱"]}</td>
+              <td>{val["藥品名稱"]}</td>
+              <td>{val["醫事機構代碼"]}</td>
               <td className="actions">
                 <select
                   defaultValue=""
                   onChange={(event) => {
                     setSelectedRow(key);
                     setUpdateField(event.target.value);
+                    setUpdateValue(val[event.target.value]);
                   }}
                 >
                   <option value="" disabled hidden>類別</option>
@@ -70,6 +80,7 @@ function LocationTable({
                 </select>
                 {selectedRow === key && updateField === "藥品名稱" ? (
                   <select
+                    value={updateValue}
                     onChange={(event) => setUpdateValue(event.target.value)}
                   >
                     <option value="" disabled hidden>選擇藥品名稱</option>
@@ -83,20 +94,21 @@ function LocationTable({
                     <input
                       type="text"
                       placeholder="Value"
-                      onChange={(event) => setUpdateValue(event.target.value)}
+                      value={updateValue}
+                      onChange={handleInputChange}
                     />
                   )
                 )}
                 <div className="actions-row">
                   <button
                     className="update-button"
-                    onClick={() => handleUpdateClick(val['醫院名稱'], updateField, updateValue)}
+                    onClick={() => handleUpdateClick(val["醫院名稱"], updateField, updateValue)}
                   >
                     更新
                   </button>
                   <button
                     className="delete-button"
-                    onClick={() => deleteLocation(val['醫院名稱'], val['藥品名稱'], val['醫事機構代碼'])}
+                    onClick={() => deleteLocation(val["醫院名稱"], val["藥品名稱"], val["醫事機構代碼"])}
                   >
                     刪除
                   </button>

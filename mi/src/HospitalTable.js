@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Pagination from "./Pagination";
 
 function HospitalTable({
@@ -15,9 +15,18 @@ function HospitalTable({
   itemsPerPage,
   handlePageChange,
 }) {
+  const [selectedHospital, setSelectedHospital] = useState(null);
+
   const handleSearchChange = (event) => {
     setSearchHospital(event.target.value);
     handlePageChange(1); // Reset to the first page on search
+  };
+
+  const handleFieldChange = (event, val) => {
+    const field = event.target.value;
+    setUpdateHospitalField(field);
+    setUpdateHospitalValue(val[field]);
+    setSelectedHospital(val);
   };
 
   const filteredHospitalList = hospitalList.filter((val) =>
@@ -57,8 +66,8 @@ function HospitalTable({
               <td>{val["醫院電話"]}</td>
               <td className="actions">
                 <select
-                  defaultValue=""
-                  onChange={(event) => setUpdateHospitalField(event.target.value)}
+                  value={selectedHospital && selectedHospital["醫事機構代碼"] === val["醫事機構代碼"] ? updateHospitalField : ""}
+                  onChange={(event) => handleFieldChange(event, val)}
                 >
                   <option value="" disabled hidden>
                     類別
@@ -71,6 +80,7 @@ function HospitalTable({
                 <input
                   type="text"
                   placeholder="Value"
+                  value={selectedHospital && selectedHospital["醫事機構代碼"] === val["醫事機構代碼"] ? updateHospitalValue : ""}
                   onChange={(event) => setUpdateHospitalValue(event.target.value)}
                 />
                 <div className="actions-row">
@@ -84,7 +94,7 @@ function HospitalTable({
                   </button>
                   <button
                     className="delete-button"
-                    onClick={() => deleteHospital(val["醫事機構代碼"])}
+                    onClick={() => deleteHospital(val["醫事機構代碼"], val["醫院名稱"])}
                   >
                     刪除
                   </button>
