@@ -8,7 +8,7 @@ import SelectLocation from './selectLocation';
 import Datagrid from './datagrid';
 import React, { useState, useRef } from 'react';
 
-const SERVER_ADDRESS = "http://192.168.0.157:3001";
+const SERVER_ADDRESS = "http://localhost:3001";
 
 const App = () => {
   const [selectedLocation, setSelectedLocation] = useState({ city: '', district: '', road: '', serum: '' });

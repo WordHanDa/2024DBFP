@@ -24,9 +24,11 @@ const ImageListWithTitle = ({ onImageClick ,SERVER_ADDRESS}) => {
   const [headShapeFilter, setHeadShapeFilter] = useState('');
   const [snakeList, setSnakeList] = useState([]);
   const [showImages, setShowImages] = useState(false);
-  const [colorOptions, setColorOptions] = useState([]);
+
   const [patternOptions, setPatternOptions] = useState([]);
+  const [colorOptions, setColorOptions] = useState([]);
   const [headShapeOptions, setHeadShapeOptions] = useState([]);
+
   const handleColorChange = (event) => {
     setColorFilter(event.target.value);
     setShowImages(true);
@@ -67,35 +69,36 @@ const ImageListWithTitle = ({ onImageClick ,SERVER_ADDRESS}) => {
       .catch((error) => {
         console.error('Error fetching pattern options:', error);
       });
-    Axios.get(`${SERVER_ADDRESS}/snakeColors`)
+      Axios.get(`${SERVER_ADDRESS}/snakeColors`)
       .then((response) => {
-        setColorOptions(response.data.map(color => color['蛇的顏色']));
+        setColorOptions(response.data);
       })
       .catch((error) => {
         console.error('Error fetching color options:', error);
       });
-    Axios.get(`${SERVER_ADDRESS}/head`)
+      Axios.get(`${SERVER_ADDRESS}/head`)
       .then((response) => {
         setHeadShapeOptions(response.data.map(headShape => headShape['頭部形狀']));
       })
       .catch((error) => {
         console.error('Error fetching head shape options:', error);
       });
+  
   });
 
   // Filter color options based on patternFilter and headShapeFilter
-  const filteredColorOptions = snakeList
-    .filter(snake =>
-      (!patternFilter || snake.斑紋 === patternFilter) &&
-      (!headShapeFilter || snake.頭部形狀 === headShapeFilter)
+  const filteredColorOptions = colorOptions
+    .filter(蛇的顏色 =>
+      (!patternFilter || 蛇的顏色.斑紋 === patternFilter) &&
+      (!headShapeFilter || 蛇的顏色.頭部形狀 === headShapeFilter)
     )
-    .map(snake => snake.顏色)
+    .map(蛇的顏色 => 蛇的顏色.蛇的顏色)
     .filter((color, index, self) => self.indexOf(color) === index);
 
   // Filter pattern options based on colorFilter and headShapeFilter
-  const filteredPatternOptions = snakeList
+  const filteredPatternOptions = colorOptions
     .filter(snake =>
-      (!colorFilter || snake.顏色 === colorFilter) &&
+      (!colorFilter || snake.蛇的顏色 === colorFilter) &&
       (!headShapeFilter || snake.頭部形狀 === headShapeFilter)
     )
     .map(snake => snake.斑紋)
@@ -106,9 +109,9 @@ const ImageListWithTitle = ({ onImageClick ,SERVER_ADDRESS}) => {
     }));
 
   // Filter head shape options based on colorFilter and patternFilter
-  const filteredHeadShapeOptions = snakeList
+  const filteredHeadShapeOptions = colorOptions
     .filter(snake =>
-      (!colorFilter || snake.顏色 === colorFilter) &&
+      (!colorFilter || snake.蛇的顏色 === colorFilter) &&
       (!patternFilter || snake.斑紋 === patternFilter)
     )
     .map(snake => snake.頭部形狀)

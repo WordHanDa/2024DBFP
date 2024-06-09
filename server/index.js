@@ -2,9 +2,16 @@ const express = require("express");
 const app = express();
 const mysql = require("mysql");
 const cors = require("cors");
+const helmet = require("helmet");
 
 app.use(cors());
 app.use(express.json());
+app.use(helmet());
+
+app.use((req,res,next)=> {
+  res.header('ngrok-skip-browser-warming', 'true');
+  next();
+});
 
 const db = mysql.createConnection({
   user: "root",
@@ -15,20 +22,34 @@ const db = mysql.createConnection({
 
 // Snake endpoints
 app.post("/createSnake", (req, res) => {
-  const { snakeID, name, poison, time, color, pattern, headShape, antivenomId, url } = req.body;
-  db.query(
-    "INSERT INTO 蛇的種類 (Snake_ID, 種類, 毒性, 出沒時間, 顏色, 斑紋, 頭部形狀, 藥品名稱, 圖片URL) VALUES (?,?,?,?,?,?,?,?,?)",
-    [snakeID, name, poison, time, color, pattern, headShape, antivenomId, url],
-    (err, result) => {
-      if (err) {
-        console.log(err);
-        res.status(500).send(err);
-      } else {
-        res.send("Values Inserted");
-      }
+  const { name, poison, time, color, pattern, headShape, antivenomId, url, url2 } = req.body;
+  db.query("SELECT Snake_ID FROM 蛇的種類 ORDER BY Snake_ID", (err, results) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send(err);
     }
-  );
+
+    let snakeID = 1;
+    for (const result of results) {
+      if (result.Snake_ID != snakeID) break;
+      snakeID++;
+    }
+
+    db.query(
+      "INSERT INTO 蛇的種類 (Snake_ID, 種類, 毒性, 出沒時間, 顏色, 斑紋, 頭部形狀, 藥品名稱, 圖片URL, 圖片URL2) VALUES (?,?,?,?,?,?,?,?,?,?)",
+      [snakeID, name, poison, time, color, pattern, headShape, antivenomId, url, url2],
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          res.status(500).send(err);
+        } else {
+          res.send("Values Inserted");
+        }
+      }
+    );
+  });
 });
+
 
 app.get("/snakes", (req, res) => {
   db.query("SELECT * FROM 蛇的種類", (err, result) => {
@@ -74,23 +95,29 @@ app.post("/createHospital", (req, res) => {
     [code, name, address, phone],
     (err, result) => {
       if (err) {
+        if (err.code === 'ER_DUP_ENTRY') {
+          return res.status(400).send("Hospital with the same code or name already exists.");
+        }
         console.log(err);
-      } else {
-        res.send("Values Inserted");
+        return res.status(500).send("Failed to add hospital.");
       }
+      res.send("Values Inserted");
     }
   );
 });
 
+
 app.get("/hospitals", (req, res) => {
   db.query("SELECT * FROM hospital", (err, result) => {
     if (err) {
-      console.log(err);
+      console.error("Error fetching hospitals:", err);
+      res.status(500).send("Failed to fetch hospitals");
     } else {
       res.send(result);
     }
   });
 });
+
 
 app.put("/updateHospital", (req, res) => {
   const { code, field, value } = req.body;
@@ -107,16 +134,24 @@ app.put("/updateHospital", (req, res) => {
   );
 });
 
-app.delete("/deleteHospital/:code", (req, res) => {
-  const code = req.params.code;
-  db.query("DELETE FROM hospital WHERE 醫事機構代碼 = ?", code, (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.send(result);
+app.delete("/deleteHospital/:code/:name", (req, res) => {
+  const { code, name } = req.params;
+  db.query(
+    "DELETE FROM hospital WHERE 醫事機構代碼 = ? AND 醫院名稱 = ?",
+    [code, name],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send("Error deleting hospital.");
+      } else if (result.affectedRows === 0) {
+        res.status(404).send("Hospital not found.");
+      } else {
+        res.send("Hospital deleted successfully.");
+      }
     }
-  });
+  );
 });
+
 
 //--------------
 app.get("/poisonLevels", (req, res) => {
@@ -131,7 +166,7 @@ app.get("/poisonLevels", (req, res) => {
 });
 
 app.get("/snakeColors", (req, res) => {
-  db.query("SELECT * FROM 蛇的顏色", (err, result) => {
+  db.query("SELECT * FROM 蛇的種類 RIGHT JOIN 蛇的顏色 ON 蛇的種類.顏色 = 蛇的顏色.蛇的顏色", (err, result) => {
     if (err) {
       console.log(err);
       res.status(500).send(err);
@@ -170,14 +205,19 @@ app.post("/createColor", (req, res) => {
     [name],
     (err, result) => {
       if (err) {
+        // 如果出现主键重复错误，则返回适当的状态码和错误信息
+        if (err.code === 'ER_DUP_ENTRY') {
+          return res.status(400).send("Color with the same name already exists.");
+        }
         console.log(err);
-        res.status(500).send(err);
+        return res.status(500).send(err);
       } else {
         res.send("Color Added");
       }
     }
   );
 });
+
 
 app.get("/colors", (req, res) => {
   db.query("SELECT * FROM `蛇的顏色`", (err, result) => {
@@ -225,14 +265,19 @@ app.post("/createPattern", (req, res) => {
     [name, URL],
     (err, result) => {
       if (err) {
+        // 如果出现主键重复错误，则返回适当的状态码和错误信息
+        if (err.code === 'ER_DUP_ENTRY') {
+          return res.status(400).send("Pattern with the same name already exists.");
+        }
         console.log(err);
-        res.status(500).send(err);
+        return res.status(500).send(err);
       } else {
-        res.send("Color Added");
+        res.send("Pattern Added");
       }
     }
   );
 });
+
 
 app.get("/patterns", (req, res) => {
   db.query("SELECT * FROM `蛇的斑紋`", (err, result) => {
@@ -280,13 +325,19 @@ app.post('/createHeadShape', (req, res) => {
     [headShapeName],
     (err, result) => {
       if (err) {
+        // 如果出现主键重复错误，则返回适当的状态码和错误信息
+        if (err.code === 'ER_DUP_ENTRY') {
+          return res.status(400).send("Head shape with the same name already exists.");
+        }
         console.log(err);
+        return res.status(500).send(err);
       } else {
         res.send('Values Inserted');
       }
     }
   );
 });
+
 
 app.get('/headShapes', (req, res) => {
   db.query('SELECT * FROM 蛇的頭部形狀', (err, result) => {
@@ -330,20 +381,25 @@ app.delete('/deleteHeadShape/:headShape', (req, res) => {
 
 //----------------------------------------
 app.post("/createLocation", (req, res) => {
-  const { hname, aname, hnumber} = req.body;
+  const { hname, aname, hnumber } = req.body;
   db.query(
     "INSERT INTO 存放位置 (醫院名稱, 藥品名稱, 醫事機構代碼) VALUES (?,?,?)",
     [hname, aname, hnumber],
     (err, result) => {
       if (err) {
+        // 检查主键冲突错误
+        if (err.code === "ER_DUP_ENTRY") {
+          return res.status(400).send("A record with the same hospital name, antivenom name, and hospital number already exists.");
+        }
         console.log(err);
-        res.status(500).send(err);
+        return res.status(500).send(err);
       } else {
         res.send("Values Inserted");
       }
     }
   );
 });
+
 
 app.get("/Location", (req, res) => {
   db.query("SELECT * FROM 存放位置", (err, result) => {
@@ -462,7 +518,7 @@ app.get("/snakeSerum", (req, res) => {
 });
 
 app.get("/hospital", (req, res) => {
-  db.query("SELECT hospital.醫事機構代碼, hospital.醫院名稱, 醫院電話, 醫院地址, 藥品名稱 FROM hospital left join 存放位置 on hospital.醫事機構代碼 = 存放位置.醫事機構代碼 and hospital.醫院名稱 = 存放位置.醫院名稱;", (err, result) => {
+  db.query("SELECT road, site, city, hospital.醫事機構代碼, hospital.醫院名稱, 醫院電話, 醫院地址, 藥品名稱 FROM hospital NATURAL JOIN road NATURAL JOIN site NATURAL JOIN city left join 存放位置 on hospital.醫事機構代碼 = 存放位置.醫事機構代碼 and hospital.醫院名稱 = 存放位置.醫院名稱;", (err, result) => {
     if (err) {
       console.log(err);
     } else {
@@ -470,7 +526,6 @@ app.get("/hospital", (req, res) => {
     }
   });
 });
-
 
 app.listen(3001, () => {
   console.log("Yey, your server is running on port 3001");
