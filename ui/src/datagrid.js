@@ -28,9 +28,6 @@ const Datagrid = ({ selectedLocation, SERVER_ADDRESS }) => {
           醫事機構代碼: hospital['醫事機構代碼'],
           醫院地址: hospital['醫院地址'],
           藥品名稱: hospital['藥品名稱'],
-          road: hospital['road'], // 新增 road
-          site: hospital['site'], // 新增 site
-          city: hospital['city'] // 新增 city
         }));
         setRows(formattedData);
         setLoading(false);
@@ -45,19 +42,26 @@ const Datagrid = ({ selectedLocation, SERVER_ADDRESS }) => {
   useEffect(() => {
     const applyFilters = () => {
       const { city, district, road, serum } = selectedLocation;
+      console.log("Selected Location:", selectedLocation);
+
       const filteredData = rows.filter(row => {
         const hasSerum = !serum || row['藥品名稱'] === serum;
-        return (
-          (!city || row.city === city) &&
-          (!district || row.site === district) &&
-          (!road || row.road === road) &&
-          hasSerum
-        );
+        const address = row['醫院地址'];
+
+        const matchesCity = !city || address.includes(city);
+        const matchesDistrict = !district || address.includes(district);
+        const matchesRoad = !road || address.includes(road);
+        return matchesCity && matchesDistrict && matchesRoad && hasSerum;
       });
+
+      console.log("Filtered Data:", filteredData);
       setFilteredRows(filteredData);
     };
+
     if (rows.length > 0) {
       applyFilters();
+    } else {
+      setFilteredRows([]); // 確保 rows 為空時清空 filteredRows
     }
   }, [selectedLocation, rows]);
 
